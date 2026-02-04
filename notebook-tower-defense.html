@@ -269,7 +269,7 @@
 			border-radius: 3px;
 			cursor: pointer;
 			text-align: left;
-		letter-spacing: 2px !important;
+			letter-spacing: 2px !important;
 		}
 
 		.tower-btn.selected {
@@ -333,6 +333,16 @@
 
 		.control-btn + .control-btn {
 			margin-top: 10px;
+		}
+
+		.control-btn.paused {
+			background-color: rgba(0, 0, 255, 0.1);
+		}
+
+		.control-btn.sell-active {
+			background-color: rgba(194, 58, 58, 0.2);
+			border-color: var(--ink-red);
+			color: var(--ink-red);
 		}
 
 		.enemy-info {
@@ -454,6 +464,33 @@
 			line-height: 1.5;
 			color: #666;
 		}
+
+		/* Pause overlay */
+		.pause-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 600px;
+			height: 700px;
+			background: rgba(255, 255, 255, 0.7);
+			display: none;
+			align-items: center;
+			justify-content: center;
+			z-index: 10;
+			pointer-events: none;
+		}
+
+		.pause-overlay.show {
+			display: flex;
+		}
+
+		.pause-text {
+			font-family: 'Solena', cursive;
+			font-size: 60px;
+			color: var(--blue);
+			transform: rotate(-5deg);
+			text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+		}
 	</style>
 </head>
 <body>
@@ -502,10 +539,15 @@
 			</div>
 
 			<canvas id="gameCanvas" width="600" height="700"></canvas>
+
+			<!-- Pause overlay -->
+			<div class="pause-overlay" id="pauseOverlay">
+				<div class="pause-text">PAUSED</div>
+			</div>
 		</div>
 
 		<div class="instructions">
-			Click map — place tower | Click tower — upgrade | 1-3 — select tower | Space — start wave
+			Click map — place tower | Click tower — upgrade | 1-3 — select tower | Space — start wave | P — pause | S — sell
 		</div>
 	</div>
 
@@ -531,6 +573,8 @@
 				<div class="tower-cost">Upgrade: 600</div>
 			</button>
 			<button class="control-btn" id="startWave">Start</button>
+			<button class="control-btn" id="pauseBtn">Pause</button>
+			<button class="control-btn" id="sellBtn">Sell Mode</button>
 			<button class="control-btn danger" id="restart">Restart</button>
 		</div>
 	</div>
@@ -554,6 +598,10 @@
 	let selectedTower = 'tower1';
 	let waveInProgress = false;
 	let gameOver = false;
+	let isPaused = false;
+	let lastPauseTime = 0;
+	let totalPausedTime = 0;
+	let sellMode = false;
 
 	// Tower types - based on cell count
 	const towerTypes = {
@@ -642,6 +690,44 @@
 
 	markPathCells();
 
+	// Toggle pause
+	function togglePause() {
+		if (gameOver) return;
+
+		isPaused = !isPaused;
+		const pauseBtn = document.getElementById('pauseBtn');
+		const pauseOverlay = document.getElementById('pauseOverlay');
+
+		if (isPaused) {
+			lastPauseTime = performance.now();
+			pauseBtn.textContent = 'Resume';
+			pauseBtn.classList.add('paused');
+			pauseOverlay.classList.add('show');
+		} else {
+			totalPausedTime += performance.now() - lastPauseTime;
+			pauseBtn.textContent = 'Pause';
+			pauseBtn.classList.remove('paused');
+			pauseOverlay.classList.remove('show');
+			requestAnimationFrame(gameLoop);
+		}
+	}
+
+	// Toggle sell mode
+	function toggleSellMode() {
+		sellMode = !sellMode;
+		const sellBtn = document.getElementById('sellBtn');
+
+		if (sellMode) {
+			sellBtn.textContent = 'Cancel Sell';
+			sellBtn.classList.add('sell-active');
+			canvas.style.cursor = 'not-allowed';
+		} else {
+			sellBtn.textContent = 'Sell Mode';
+			sellBtn.classList.remove('sell-active');
+			canvas.style.cursor = 'crosshair';
+		}
+	}
+
 	// Tower class - multi-cell with individual upgrades and shooting
 	class Tower {
 		constructor(x, y, type) {
@@ -722,6 +808,21 @@
 
 		getUpgradeCost() {
 			return this.upgradeCost;
+		}
+
+		// Calculate sell value (50% of total investment)
+		getSellValue() {
+			const baseCost = towerTypes[this.type].cost;
+			let totalUpgradeCost = 0;
+
+			// Calculate upgrade costs for each cell
+			for (const cell of this.cells) {
+				// Each level above 1 costs upgradeCost
+				totalUpgradeCost += (cell.level - 1) * this.upgradeCost;
+			}
+
+			const totalInvestment = baseCost + totalUpgradeCost;
+			return Math.floor(totalInvestment * 0.5);
 		}
 
 		// Find target for a specific cell
@@ -831,11 +932,20 @@
 			if (this.showRange) {
 				ctx.beginPath();
 				ctx.arc(this.x, this.y, this.range, 0, Math.PI * 2);
-				ctx.strokeStyle = '#0000ff';
+				ctx.strokeStyle = sellMode ? '#c23a3a' : '#0000ff';
 				ctx.lineWidth = 1;
 				ctx.setLineDash([8, 4]);
 				ctx.stroke();
 				ctx.setLineDash([]);
+
+				// Show sell value in sell mode
+				if (sellMode) {
+					const sellValue = this.getSellValue();
+					ctx.font = '16px Solena, cursive';
+					ctx.fillStyle = '#2a7a4a';
+					ctx.textAlign = 'center';
+					ctx.fillText('+' + sellValue + ' gold', this.x, this.y - 25);
+				}
 			}
 		}
 	}
@@ -1585,6 +1695,8 @@
 	}
 
 	// Spawn wave
+	let spawnIntervalId = null;
+
 	function spawnWave() {
 		if (waveInProgress || gameOver) return;
 
@@ -1595,9 +1707,12 @@
 		const enemyCount = 5 + wave * 2;
 		let spawned = 0;
 
-		const spawnInterval = setInterval(() => {
+		spawnIntervalId = setInterval(() => {
+			if (isPaused) return; // Skip spawning while paused
+
 			if (spawned >= enemyCount || gameOver) {
-				clearInterval(spawnInterval);
+				clearInterval(spawnIntervalId);
+				spawnIntervalId = null;
 				return;
 			}
 
@@ -1699,6 +1814,28 @@
 		updateUI();
 	}
 
+	// Sell tower
+	function sellTower(clickX, clickY) {
+		for (let i = 0; i < towers.length; i++) {
+			const tower = towers[i];
+			const cellIndex = tower.getCellAtPosition(clickX, clickY);
+			if (cellIndex >= 0) {
+				const sellValue = tower.getSellValue();
+				gold += sellValue;
+
+				// Create sell particles
+				for (let j = 0; j < 8; j++) {
+					particles.push(new Particle(tower.x, tower.y, '#2a7a4a', 'death'));
+				}
+
+				towers.splice(i, 1);
+				updateUI();
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// Check tower click - upgrade specific cell that was clicked
 	function checkTowerClick(mouseX, mouseY) {
 		for (const tower of towers) {
@@ -1717,14 +1854,21 @@
 
 	// Canvas click handler
 	canvas.addEventListener('click', (e) => {
-		if (gameOver) return;
+		if (gameOver || isPaused) return;
 
 		const rect = canvas.getBoundingClientRect();
 		const clickX = e.clientX - rect.left;
 		const clickY = e.clientY - rect.top;
 
-		if (!checkTowerClick(clickX, clickY)) {
-			placeTower(clickX, clickY);
+		if (sellMode) {
+			if (sellTower(clickX, clickY)) {
+				// Tower sold, optionally exit sell mode
+				// toggleSellMode(); // uncomment to auto-exit sell mode after selling
+			}
+		} else {
+			if (!checkTowerClick(clickX, clickY)) {
+				placeTower(clickX, clickY);
+			}
 		}
 	});
 
@@ -1757,6 +1901,8 @@
 
 	// Control buttons
 	document.getElementById('startWave').addEventListener('click', spawnWave);
+	document.getElementById('pauseBtn').addEventListener('click', togglePause);
+	document.getElementById('sellBtn').addEventListener('click', toggleSellMode);
 	document.getElementById('restart').addEventListener('click', () => location.reload());
 
 	// Keyboard shortcuts
@@ -1771,13 +1917,26 @@
 			e.preventDefault();
 			spawnWave();
 		}
+		if (e.key === 'p' || e.key === 'P' || e.key === 'з' || e.key === 'З') {
+			togglePause();
+		}
+		if (e.key === 'Escape') {
+			if (isPaused) togglePause();
+			if (sellMode) toggleSellMode();
+		}
+		if (e.key === 's' || e.key === 'S' || e.key === 'ы' || e.key === 'Ы') {
+			toggleSellMode();
+		}
 	});
 
 	// Game loop
 	let lastTime = 0;
 
 	function gameLoop(time) {
-		if (gameOver) return;
+		if (gameOver || isPaused) return;
+
+		// Adjust time for pauses
+		const adjustedTime = time - totalPausedTime;
 
 		ctx.fillStyle = '#ffffff';
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -1790,7 +1949,7 @@
 
 		// Update and draw towers
 		for (const tower of towers) {
-			tower.update(time);
+			tower.update(adjustedTime);
 			tower.draw();
 		}
 
