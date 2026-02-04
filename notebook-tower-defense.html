@@ -504,14 +504,14 @@
 					<!--					<div class="stat-icon">💰</div>-->
 					<div>
 						<div style="font-size: 26px;color: #0000ff;font-weight: 700;letter-spacing: 2px !important;">Gold</div>
-						<div class="stat-value" id="gold">600</div>
+						<div class="stat-value" id="gold">150</div>
 					</div>
 				</div>
 				<div class="stat lives">
 					<!--					<div class="stat-icon">❤️</div>-->
 					<div>
 						<div style="font-size: 26px;color: #0000ff;font-weight: 700;letter-spacing: 2px !important;">Life</div>
-						<div class="stat-value" id="lives">3</div>
+						<div class="stat-value" id="lives">5</div>
 					</div>
 				</div>
 				<div class="stat wave">
@@ -557,20 +557,20 @@
 
 			<button class="tower-btn tower1 selected" data-tower="tower1">
 				<div class="tower-name">Tower-1</div>
-				<div class="tower-stats">Buy: 100</div>
-				<div class="tower-cost">Upgrade: 200</div>
+				<div class="tower-stats">Buy: 80</div>
+				<div class="tower-cost">Upgrade: 120</div>
 			</button>
 
 			<button class="tower-btn tower2" data-tower="tower2">
 				<div class="tower-name">Tower-2</div>
-				<div class="tower-stats">Buy: 200</div>
-				<div class="tower-cost">Upgrade: 400</div>
+				<div class="tower-stats">Buy: 150</div>
+				<div class="tower-cost">Upgrade: 200</div>
 			</button>
 
 			<button class="tower-btn tower3" data-tower="tower3">
 				<div class="tower-name">Tower-3</div>
-				<div class="tower-stats">Buy: 300</div>
-				<div class="tower-cost">Upgrade: 600</div>
+				<div class="tower-stats">Buy: 250</div>
+				<div class="tower-cost">Upgrade: 350</div>
 			</button>
 			<button class="control-btn" id="startWave">Start</button>
 			<button class="control-btn" id="pauseBtn">Pause</button>
@@ -591,8 +591,8 @@
 	const ctx = canvas.getContext('2d');
 
 	// Game state
-	let gold = 600;
-	let lives = 3;
+	let gold = 420;
+	let lives = 5;
 	let wave = 0;
 	let score = 0;
 	let selectedTower = 'tower1';
@@ -605,17 +605,17 @@
 
 	// Tower types - based on cell count
 	const towerTypes = {
-		tower1: {cost: 100, upgradeCost: 200, damage: 30, range: 100, fireRate: 500, cells: 1, name: 'Tower 1'},
-		tower2: {cost: 200, upgradeCost: 400, damage: 20, range: 150, fireRate: 450, cells: 2, name: 'Tower 2'},
-		tower3: {cost: 300, upgradeCost: 600, damage: 10, range: 200, fireRate: 400, cells: 3, name: 'Tower 3'}
+		tower1: {cost: 80, upgradeCost: 120, damage: 20, range: 90, fireRate: 600, cells: 1, name: 'Tower 1'},
+		tower2: {cost: 150, upgradeCost: 200, damage: 15, range: 130, fireRate: 500, cells: 2, name: 'Tower 2'},
+		tower3: {cost: 250, upgradeCost: 350, damage: 25, range: 180, fireRate: 550, cells: 3, name: 'Tower 3'}
 	};
 
 	// Enemy definitions
 	const enemyTypes = {
-		basic: {hp: 200, speed: 2, reward: 10, color: '#c23a3a', size: 10},
-		fast: {hp: 100, speed: 4, reward: 15, color: '#d4762c', size: 8},
-		tank: {hp: 600, speed: 2, reward: 30, color: '#6a3a9a', size: 14},
-		boss: {hp: 800, speed: 1, reward: 100, color: '#d4326c', size: 20}
+		basic: {hp: 150, speed: 2.2, reward: 6, color: '#c23a3a', size: 10},
+		fast: {hp: 80, speed: 4.5, reward: 8, color: '#d4762c', size: 8},
+		tank: {hp: 500, speed: 1.5, reward: 20, color: '#6a3a9a', size: 14},
+		boss: {hp: 1000, speed: 1.2, reward: 50, color: '#d4326c', size: 20}
 	};
 
 	// Path waypoints - adjusted for vertical A5 format
@@ -1704,7 +1704,7 @@
 		waveInProgress = true;
 		updateUI();
 
-		const enemyCount = 5 + wave * 2;
+		const enemyCount = 6 + wave * 3;
 		let spawned = 0;
 
 		spawnIntervalId = setInterval(() => {
@@ -1720,13 +1720,13 @@
 			let type = 'basic';
 			const rand = Math.random();
 
-			if (wave >= 3 && rand < 0.3) type = 'fast';
-			if (wave >= 5 && rand < 0.2) type = 'tank';
-			if (wave >= 7 && rand < 0.1 && spawned === enemyCount - 1) type = 'boss';
+			if (wave >= 2 && rand < 0.35) type = 'fast';
+			if (wave >= 3 && rand < 0.25) type = 'tank';
+			if (wave >= 5 && rand < 0.15 && spawned === enemyCount - 1) type = 'boss';
 
 			// Wave scaling
 			const enemy = new Enemy(type);
-			enemy.hp *= 1 + (wave - 1) * 0.15;
+			enemy.hp *= 1 + (wave - 1) * 0.2;
 			enemy.maxHp = enemy.hp;
 			enemy.reward = Math.floor(enemy.reward * (1 + (wave - 1) * 0.1));
 
@@ -1739,7 +1739,7 @@
 	function checkWaveComplete() {
 		if (waveInProgress && enemies.length === 0) {
 			waveInProgress = false;
-			gold += 25 + wave * 5; // Wave completion bonus
+			gold += 15 + wave * 3; // Wave completion bonus
 			updateUI();
 		}
 	}
