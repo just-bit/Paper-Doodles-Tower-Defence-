@@ -1350,8 +1350,11 @@ canvas.addEventListener('mousemove', (e) => {
 });
 
 canvas.addEventListener('mouseleave', () => {
-	mouseGridX = -1;
-	mouseGridY = -1;
+	mouseX = -1;
+	mouseY = -1;
+	for (const tower of towers) {
+		tower.showRange = false;
+	}
 });
 
 // Tower selection
