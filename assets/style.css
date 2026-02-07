@@ -258,10 +258,12 @@ body {
 	margin-bottom: 8px;
 	background: transparent;
 	border: 2px solid transparent;
-	border-radius: 3px;
+	border-radius: 0;
 	cursor: pointer;
 	text-align: left;
 	letter-spacing: 2px !important;
+	position: relative;
+	transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .tower-preview {
@@ -269,10 +271,39 @@ body {
 	margin-bottom: 4px;
 }
 
-.tower-btn.selected {
-	border: 2px solid var(--blue);
-	background: transparent;
+.tower-btn-wrap {
+	margin-bottom: 8px;
+	position: relative;
 }
+
+.tower-btn-wrap:has(.tower-btn.selected) {
+	filter: drop-shadow(2px 7px 5px rgba(0, 0, 0, 0.15));
+}
+
+
+.tower-btn.selected {
+	background: var(--paper-bg);
+	background-image: linear-gradient(rgba(140, 180, 220, 0.3) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(140, 180, 220, 0.3) 1px, transparent 1px);
+	background-size: 16px 16px;
+	border: none;
+	clip-path: polygon(0% 2%, 4% 0%, 10% 1%, 22% 0%, 35% 2%, 50% 0%, 65% 1%, 80% 0%, 90% 2%, 96% 0%, 100% 1%, 99.45% 81.42%, 88.13% 101.75%, 75.03% 99.75%, 65% 100%, 50% 99%, 35% 100%, 20% 98%, 8% 100%, 0% 99%);	transform: rotate(-0.5deg);
+	margin-bottom: 0;
+}
+
+.tower-btn.selected::before {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 25px;
+	height: 25px;
+	background: linear-gradient(135deg, transparent 50%, #e8e5e0 50%, #d8d5d0 100%);
+	box-shadow:
+		-2px -2px 3px rgba(0, 0, 0, 0.15),
+		-4px -4px 6px rgba(0, 0, 0, 0.08);
+}
+
 
 .tower-btn.tower1 {
 	color: var(--ink-red);
@@ -309,43 +340,89 @@ body {
 	font-weight: 700;
 }
 
+.control-btn-wrap {
+	filter: drop-shadow(2px 3px 4px rgba(0, 0, 0, 0.25));
+	transition: filter 0.2s ease;
+}
+
+.control-btn-wrap:first-of-type {
+	margin-top: 20px;
+}
+
+.control-btn-wrap + .control-btn-wrap {
+	margin-top: 8px;
+}
+
+.control-btn-wrap:hover {
+	filter: drop-shadow(3px 4px 6px rgba(0, 0, 0, 0.35));
+}
+
 .control-btn {
 	width: 100%;
 	padding: 10px;
 	font-family: 'Solena', cursive;
 	font-size: 25px;
 	font-weight: 700;
-	border: 2px solid var(--blue);
+	border: none;
 	border-radius: 0;
 	color: var(--blue);
 	cursor: pointer;
-	transition: all 0.3s ease;
 	letter-spacing: 1px;
-	background-color: transparent;
+	background: var(--paper-bg);
+	background-image: linear-gradient(rgba(140, 180, 220, 0.3) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(140, 180, 220, 0.3) 1px, transparent 1px);
+	background-size: 16px 16px;
+	clip-path: polygon(0% 3%, 3% 0%, 8% 2%, 20% 0%, 35% 3%, 50% 0%, 65% 2%, 80% 0%, 92% 3%, 97% 0%, 100% 2%, 100% 97%, 95% 100%, 82% 98%, 68% 100%, 50% 98%, 35% 100%, 18% 98%, 5% 100%, 0% 97%);
+	transition: transform 0.2s ease;
+	position: relative;
 }
 
-.control-btn:has(+ .control-btn) {
-	margin-top: 30px;
+.control-btn:hover {
+	transform: rotate(-0.3deg);
 }
 
-.control-btn+.control-btn {
-	margin-top: 10px;
+.control-btn:active {
+	transform: rotate(0.3deg) scale(0.98);
 }
 
 .control-btn:disabled {
-	opacity: 0.35;
 	cursor: default;
 	pointer-events: none;
+	color: #000000;
+	font-weight: 400;
+}
+
+.control-btn-wrap:has(.control-btn:disabled) {
+	filter: none;
 }
 
 .control-btn.paused {
-	background-color: rgba(0, 0, 255, 0.1);
+	clip-path: polygon(0% 3%, 3% 0%, 8% 2%, 20% 0%, 35% 3%, 50% 0%, 65% 2%, 80% 0%, 92% 3%, 97% 0%, 100% 2%, 98.33% 55.82%, 86.10% 96.04%, 78.67% 103.88%, 68% 100%, 50% 98%, 35% 100%, 18% 98%, 5% 100%, 0% 97%);
 }
 
-.control-btn.sell-active {
-	background-color: rgba(194, 58, 58, 0.2);
-	border-color: var(--ink-red);
-	color: var(--ink-red);
+.control-btn.paused::before {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 25px;
+	height: 25px;
+	background: linear-gradient(135deg, transparent 50%, #e8e5e0 50%, #d8d5d0 100%);
+	box-shadow: -2px -2px 3px rgba(0, 0, 0, 0.15), -4px -4px 6px rgba(0, 0, 0, 0.08);
+}
+
+.control-btn.sell-active{
+	clip-path: polygon(0% 3%, 3% 0%, 8% 2%, 20% 0%, 35% 3%, 50% 0%, 65% 2%, 80% 0%, 92% 3%, 97% 0%, 100% 2%, 98.33% 55.82%, 86.10% 96.04%, 78.67% 103.88%, 68% 100%, 50% 98%, 35% 100%, 18% 98%, 5% 100%, 0% 97%);}
+
+.control-btn.sell-active::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 25px;
+    height: 25px;
+    background: linear-gradient(135deg, transparent 50%, #e8e5e0 50%, #d8d5d0 100%);
+    box-shadow: -2px -2px 3px rgba(0, 0, 0, 0.15), -4px -4px 6px rgba(0, 0, 0, 0.08);
 }
 
 .enemy-info {
@@ -520,7 +597,7 @@ body {
 	height: 25px;
 	background: linear-gradient(135deg, transparent 50%, #e8e5e0 50%, #d8d5d0 100%);
 	box-shadow:
-		-2px -2px 3px rgba(0, 0, 0, 0.15),
+		-2px -2px 3px rgba(0, 0, 0, 0.05),
 		-4px -4px 6px rgba(0, 0, 0, 0.08);
 }
 

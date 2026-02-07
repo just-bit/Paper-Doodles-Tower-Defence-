@@ -2,7 +2,7 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 // Game state
-let gold = 420;
+let gold = 300;
 let lives = 5;
 let wave = 0;
 let score = 0;
@@ -16,17 +16,17 @@ let sellMode = false;
 
 // Tower types - based on cell count
 const towerTypes = {
-	tower1: { cost: 80, upgradeCost: 120, damage: 20, range: 90, fireRate: 600, cells: 1, name: 'Tower 1' },
-	tower2: { cost: 150, upgradeCost: 200, damage: 15, range: 130, fireRate: 500, cells: 2, name: 'Tower 2' },
-	tower3: { cost: 250, upgradeCost: 350, damage: 25, range: 180, fireRate: 550, cells: 3, name: 'Tower 3' }
+	tower1: { cost: 80, upgradeCost: 100, damage: 20, range: 90, fireRate: 600, cells: 1, name: 'Tower 1' },
+	tower2: { cost: 150, upgradeCost: 170, damage: 15, range: 130, fireRate: 500, cells: 2, name: 'Tower 2' },
+	tower3: { cost: 250, upgradeCost: 300, damage: 25, range: 180, fireRate: 550, cells: 3, name: 'Tower 3' }
 };
 
 // Enemy definitions
 const enemyTypes = {
-	basic: { hp: 150, speed: 2.2, reward: 6, color: '#c23a3a', size: 10 },
-	fast: { hp: 80, speed: 4.5, reward: 8, color: '#d4762c', size: 8 },
-	tank: { hp: 500, speed: 1.5, reward: 20, color: '#6a3a9a', size: 14 },
-	boss: { hp: 1000, speed: 1.2, reward: 50, color: '#d4326c', size: 20 }
+	basic: { hp: 160, speed: 2.2, reward: 6, color: '#c23a3a', size: 10 },
+	fast: { hp: 90, speed: 4.5, reward: 8, color: '#d4762c', size: 8 },
+	tank: { hp: 450, speed: 1.5, reward: 20, color: '#6a3a9a', size: 14 },
+	boss: { hp: 900, speed: 1.2, reward: 50, color: '#d4326c', size: 20 }
 };
 
 // Path waypoints - adjusted for vertical A5 format
@@ -1139,43 +1139,70 @@ function spawnWave() {
 	updateNextWaveBtn();
 	updateUI();
 
-	const enemyCount = 6 + wave * 3;
+	// Boss wave every 10 levels
+	const isBossWave = wave % 10 === 0;
+	const bossWaveTier = wave / 10; // 1 at wave 10, 2 at wave 20, etc.
+
+	// Build spawn queue
+	const spawnQueue = [];
+
+	if (isBossWave) {
+		// Boss wave: N bosses + N*2 tanks
+		for (let i = 0; i < bossWaveTier; i++) spawnQueue.push('boss');
+		for (let i = 0; i < bossWaveTier * 2; i++) spawnQueue.push('tank');
+	} else {
+		const enemyCount = 6 + wave * 3;
+		for (let i = 0; i < enemyCount; i++) {
+			let type = 'basic';
+			const rand = Math.random();
+			if (wave >= 2 && rand < 0.35) type = 'fast';
+			if (wave >= 3 && rand < 0.25) type = 'tank';
+			if (wave >= 5 && rand < 0.15 && i === enemyCount - 1) type = 'boss';
+			spawnQueue.push(type);
+		}
+	}
+
 	let spawned = 0;
 
 	spawnIntervalId = setInterval(() => {
 		if (isPaused) return; // Skip spawning while paused
 
-		if (spawned >= enemyCount || gameOver) {
+		if (spawned >= spawnQueue.length || gameOver) {
 			clearInterval(spawnIntervalId);
 			spawnIntervalId = null;
 			return;
 		}
 
-		// Determine enemy type based on wave
-		let type = 'basic';
-		const rand = Math.random();
+		const type = spawnQueue[spawned];
 
-		if (wave >= 2 && rand < 0.35) type = 'fast';
-		if (wave >= 3 && rand < 0.25) type = 'tank';
-		if (wave >= 5 && rand < 0.15 && spawned === enemyCount - 1) type = 'boss';
-
-		// Wave scaling - enemies get stronger every 10 waves
+		// Wave scaling - enemies get stronger every wave
 		const enemy = new Enemy(type);
-		const tier = Math.floor((wave - 1) / 10);   // 0 for waves 1-10, 1 for 11-20, etc.
-		enemy.hp *= 1 + tier * 0.15;                // +15% HP every 10 waves
+		enemy.hp *= 1 + (wave - 1) * 0.08;         // +8% HP per wave (compounding)
+
+		// Bosses always get +25% HP on top of general scaling
+		if (type === 'boss') {
+			enemy.hp *= 1.25;
+		}
+
+		// Speed also scales slightly
+		enemy.speed *= 1 + (wave - 1) * 0.01;       // +1% speed per wave
+		enemy.baseSpeed = enemy.speed;
+
 		enemy.maxHp = enemy.hp;
+		// Reward scales slower than difficulty
+		const tier = Math.floor((wave - 1) / 10);
 		enemy.reward = Math.floor(enemy.reward * (1 + tier * 0.05)); // +5% reward every 10 waves
 
 		enemies.push(enemy);
 		spawned++;
-	}, 800 - Math.min(wave * 30, 500));
+	}, isBossWave ? 1200 : 800 - Math.min(wave * 30, 500));
 }
 
 // Check wave complete
 function checkWaveComplete() {
 	if (waveInProgress && enemies.length === 0) {
 		waveInProgress = false;
-		gold += 15 + wave * 3; // Wave completion bonus
+		gold += 15 + Math.min(wave * 2, 30); // Wave completion bonus (capped at 45)
 		updateUI();
 		updateNextWaveBtn();
 	}

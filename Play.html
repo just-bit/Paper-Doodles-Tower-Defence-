@@ -84,27 +84,33 @@
 			<div class="panel">
 				<div class="panel-title">Towers</div>
 
-			<button class="tower-btn tower1 selected" data-tower="tower1">
-				<canvas class="tower-preview" data-cells="1" width="24" height="24"></canvas>
-				<div class="tower-stats">Buy: 80</div>
-				<div class="tower-cost">Upgrade: 120</div>
-			</button>
+			<div class="tower-btn-wrap">
+				<button class="tower-btn tower1 selected" data-tower="tower1">
+					<canvas class="tower-preview" data-cells="1" width="24" height="24"></canvas>
+					<div class="tower-stats">Buy: 80</div>
+					<div class="tower-cost">Upgrade: 100</div>
+				</button>
+			</div>
 
-			<button class="tower-btn tower2" data-tower="tower2">
-				<canvas class="tower-preview" data-cells="2" width="40" height="24"></canvas>
-				<div class="tower-stats">Buy: 150</div>
-				<div class="tower-cost">Upgrade: 200</div>
-			</button>
+			<div class="tower-btn-wrap">
+				<button class="tower-btn tower2" data-tower="tower2">
+					<canvas class="tower-preview" data-cells="2" width="40" height="24"></canvas>
+					<div class="tower-stats">Buy: 150</div>
+					<div class="tower-cost">Upgrade: 170</div>
+				</button>
+			</div>
 
-			<button class="tower-btn tower3" data-tower="tower3">
-				<canvas class="tower-preview" data-cells="3" width="56" height="24"></canvas>
-				<div class="tower-stats">Buy: 250</div>
-				<div class="tower-cost">Upgrade: 350</div>
-			</button>
-				<button class="control-btn" id="playPauseBtn">Start</button>
-				<button class="control-btn" id="nextWaveBtn" disabled>Next Wave</button>
-				<button class="control-btn" id="sellBtn">Sell Mode</button>
-				<button class="control-btn danger" id="restart">Restart</button>
+			<div class="tower-btn-wrap">
+				<button class="tower-btn tower3" data-tower="tower3">
+					<canvas class="tower-preview" data-cells="3" width="56" height="24"></canvas>
+					<div class="tower-stats">Buy: 250</div>
+					<div class="tower-cost">Upgrade: 300</div>
+				</button>
+			</div>
+				<div class="control-btn-wrap"><button class="control-btn" id="playPauseBtn">Start</button></div>
+				<div class="control-btn-wrap"><button class="control-btn" id="nextWaveBtn" disabled>Next Wave</button></div>
+				<div class="control-btn-wrap"><button class="control-btn" id="sellBtn">Sell Mode</button></div>
+				<div class="control-btn-wrap"><button class="control-btn danger" id="restart">Restart</button></div>
 			</div>
 		</div>
 	</div>
