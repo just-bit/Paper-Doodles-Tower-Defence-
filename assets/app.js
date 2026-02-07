@@ -14,8 +14,11 @@ caveImg.src = 'assets/images/cave.png';
 const castleImg = new Image();
 castleImg.src = 'assets/images/castle.png';
 
+// Game config
+const MAX_WAVE = 2;
+
 // Game state
-let gold = 300;
+let gold = 500;
 let lives = 5;
 let wave = 0;
 let score = 0;
@@ -933,6 +936,10 @@ let spawnIntervalId = null;
 
 function spawnWave() {
 	if (waveInProgress || gameOver) return;
+	if (wave >= MAX_WAVE) {
+		winGame(); // Show victory when already at last wave (e.g. just completed it)
+		return;
+	}
 
 	wave++;
 	waveInProgress = true;
@@ -941,17 +948,35 @@ function spawnWave() {
 
 	// Boss wave every 10 levels
 	const isBossWave = wave % 10 === 0;
-	const bossWaveTier = wave / 10; // 1 at wave 10, 2 at wave 20, etc.
+	const bossWaveTier = wave / 10;
 
-	// Build spawn queue
+	// Build spawn queue based on wave phase
 	const spawnQueue = [];
+	const enemyCount = 6 + wave * 3;
 
 	if (isBossWave) {
 		// Boss wave: N bosses + N*2 tanks
 		for (let i = 0; i < bossWaveTier; i++) spawnQueue.push('boss');
 		for (let i = 0; i < bossWaveTier * 2; i++) spawnQueue.push('tank');
+	} else if (wave > 60) {
+		// 61-99: only bosses
+		const count = Math.floor(enemyCount * 0.3);
+		for (let i = 0; i < count; i++) spawnQueue.push('boss');
+	} else if (wave > 40) {
+		// 41-59: only tanks
+		for (let i = 0; i < enemyCount; i++) spawnQueue.push('tank');
+	} else if (wave > 20) {
+		// 21-39: no basic, more fast + some tanks
+		for (let i = 0; i < enemyCount; i++) {
+			const rand = Math.random();
+			if (rand < 0.35) {
+				spawnQueue.push('tank');
+			} else {
+				spawnQueue.push('fast');
+			}
+		}
 	} else {
-		const enemyCount = 6 + wave * 3;
+		// 1-20: normal mix
 		for (let i = 0; i < enemyCount; i++) {
 			let type = 'basic';
 			const rand = Math.random();
@@ -965,7 +990,7 @@ function spawnWave() {
 	let spawned = 0;
 
 	spawnIntervalId = setInterval(() => {
-		if (isPaused) return; // Skip spawning while paused
+		if (isPaused) return;
 
 		if (spawned >= spawnQueue.length || gameOver) {
 			clearInterval(spawnIntervalId);
@@ -977,21 +1002,27 @@ function spawnWave() {
 
 		// Wave scaling - enemies get stronger every wave
 		const enemy = new Enemy(type);
-		enemy.hp *= 1 + (wave - 1) * 0.08;         // +8% HP per wave (compounding)
+		enemy.hp *= 1 + (wave - 1) * 0.08;         // +8% HP per wave
 
 		// Bosses always get +25% HP on top of general scaling
 		if (type === 'boss') {
 			enemy.hp *= 1.25;
 		}
 
-		// Speed also scales slightly
-		enemy.speed *= 1 + (wave - 1) * 0.01;       // +1% speed per wave
+		// After wave 80: bosses get extra +25% HP and move faster
+		if (wave > 80 && type === 'boss') {
+			enemy.hp *= 1.25;
+			enemy.speed *= 1.3;
+			enemy.baseSpeed = enemy.speed;
+		}
+
+		// Speed scales slightly
+		enemy.speed *= 1 + (wave - 1) * 0.01;
 		enemy.baseSpeed = enemy.speed;
 
 		enemy.maxHp = enemy.hp;
-		// Reward scales slower than difficulty
 		const tier = Math.floor((wave - 1) / 10);
-		enemy.reward = Math.floor(enemy.reward * (1 + tier * 0.05)); // +5% reward every 10 waves
+		enemy.reward = Math.floor(enemy.reward * (1 + tier * 0.05));
 
 		enemies.push(enemy);
 		spawned++;
@@ -1000,19 +1031,34 @@ function spawnWave() {
 
 // Check wave complete
 function checkWaveComplete() {
-	if (waveInProgress && enemies.length === 0) {
-		waveInProgress = false;
-		gold += 15 + Math.min(wave * 2, 30); // Wave completion bonus (capped at 45)
-		updateUI();
+	if (!waveInProgress || enemies.length !== 0 || spawnIntervalId !== null) return;
+
+	waveInProgress = false;
+
+	// Victory: show immediately after last wave is cleared
+	if (wave >= MAX_WAVE) {
+		winGame();
 		updateNextWaveBtn();
+		return;
 	}
+
+	gold += 15 + Math.min(wave * 2, 30);
+	updateUI();
+	updateNextWaveBtn();
+}
+
+// Win game
+function winGame() {
+	gameOver = true;
+	document.getElementById('victoryScore').textContent = score;
+	document.getElementById('victoryScreen').classList.add('show');
 }
 
 // Update UI
 function updateUI() {
 	document.getElementById('gold').textContent = gold;
 	document.getElementById('lives').textContent = lives;
-	document.getElementById('wave').textContent = wave;
+	document.getElementById('wave').textContent = wave + ' / ' + MAX_WAVE;
 	document.getElementById('score').textContent = score;
 }
 
@@ -1233,9 +1279,10 @@ function gameLoop(time) {
 
 		// Update and filter particles
 		particles = particles.filter(p => p.update());
-
-		checkWaveComplete();
 	}
+
+	// Check wave complete every frame (so victory shows as soon as last enemy dies)
+	checkWaveComplete();
 
 	// Always draw everything
 	for (const tower of towers) {
