@@ -16,6 +16,7 @@ castleImg.src = 'assets/images/castle.png';
 
 // Game config
 const MAX_WAVE = 2;
+const TAUNT_DELAY = 10000;
 
 // Game state
 let gold = 500;
@@ -34,6 +35,7 @@ let sellMode = false;
 let lastWaveEndTime = 0;
 let tauntIntervalId = null;
 let currentTauntIndex = 0;
+let tauntsWereShowing = false;
 
 // Tower types - based on cell count
 const towerTypes = {
@@ -124,7 +126,7 @@ markPathCells();
 
 // Hide all message overlays
 function hideAllOverlays() {
-	var overlays = ['attackOverlay', 'doneOverlay', 'oneOverlay', 'pauseOverlay', 'tempOverlay'];
+	var overlays = ['attackOverlay', 'doneOverlay', 'oneOverlay', 'pauseOverlay', 'tempOverlay', 'finallyOverlay'];
 	overlays.forEach(function (id) {
 		var el = document.getElementById(id);
 		if (el) el.classList.remove('show');
@@ -152,6 +154,7 @@ function showTaunt() {
 			el.style.display = (i === currentTauntIndex) ? 'block' : 'none';
 		});
 		tempOverlay.classList.add('show');
+		tauntsWereShowing = true;
 		console.log('Showing taunt:', currentTauntIndex);
 
 		// Move to next message
@@ -167,14 +170,14 @@ function startTauntTimer() {
 
 	lastWaveEndTime = Date.now();
 
-	// Wait 2 seconds then start showing taunts
+	// Wait TAUNT_DELAY then start showing taunts
 	tauntTimeoutId = setTimeout(function () {
 		if (!waveInProgress && !gameOver) {
 			console.log('Starting taunts');
 			showTaunt();
-			tauntIntervalId = setInterval(showTaunt, 4000);
+			tauntIntervalId = setInterval(showTaunt, 8000);
 		}
-	}, 2000);
+	}, TAUNT_DELAY);
 }
 
 function stopTaunts() {
@@ -207,9 +210,7 @@ function togglePlayPause() {
 		btn.textContent = 'Pause';
 		updateNextWaveBtn();
 		updatePauseBtn();
-
-		// Show "Attack...!!!"
-		document.getElementById('attackOverlay').classList.add('show');
+		// Attack overlay is shown in spawnWave with Finally logic
 		return;
 	}
 
@@ -223,6 +224,8 @@ function togglePlayPause() {
 		btn.classList.add('paused');
 		pauseOverlay.classList.add('show');
 		attackOverlay.classList.remove('show');
+		var finallyOv = document.getElementById('finallyOverlay');
+		if (finallyOv) finallyOv.classList.remove('show');
 	} else {
 		totalPausedTime += performance.now() - lastPauseTime;
 		btn.textContent = 'Pause';
@@ -1047,9 +1050,28 @@ function spawnWave() {
 	updateUI();
 
 	// Show "Attack...!!!" when wave starts (hide all other overlays)
+	var showFinally = tauntsWereShowing;
 	stopTaunts();
 	hideAllOverlays();
-	document.getElementById('attackOverlay').classList.add('show');
+	tauntsWereShowing = false;
+
+	if (showFinally) {
+		// Show "Finally..." for 3 seconds, then show Attack
+		var finallyOverlay = document.getElementById('finallyOverlay');
+		if (finallyOverlay) {
+			finallyOverlay.classList.add('show');
+			setTimeout(function () {
+				finallyOverlay.classList.remove('show');
+				if (waveInProgress && !isPaused && !gameOver) {
+					document.getElementById('attackOverlay').classList.add('show');
+				}
+			}, 500);
+		} else {
+			document.getElementById('attackOverlay').classList.add('show');
+		}
+	} else {
+		document.getElementById('attackOverlay').classList.add('show');
+	}
 
 	// Boss wave every 10 levels
 	const isBossWave = wave % 10 === 0;
