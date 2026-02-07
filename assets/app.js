@@ -129,21 +129,28 @@ function togglePlayPause() {
 		spawnWave();
 		btn.textContent = 'Pause';
 		updateNextWaveBtn();
+
+		// Show "Attack...!!!"
+		document.getElementById('attackOverlay').classList.add('show');
 		return;
 	}
 
 	isPaused = !isPaused;
+
+	const attackOverlay = document.getElementById('attackOverlay');
 
 	if (isPaused) {
 		lastPauseTime = performance.now();
 		btn.textContent = 'Resume';
 		btn.classList.add('paused');
 		pauseOverlay.classList.add('show');
+		attackOverlay.classList.remove('show');
 	} else {
 		totalPausedTime += performance.now() - lastPauseTime;
 		btn.textContent = 'Pause';
 		btn.classList.remove('paused');
 		pauseOverlay.classList.remove('show');
+		attackOverlay.classList.add('show');
 	}
 }
 
