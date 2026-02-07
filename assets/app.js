@@ -117,6 +117,15 @@ function markPathCells() {
 
 markPathCells();
 
+// Hide all message overlays
+function hideAllOverlays() {
+	var overlays = ['attackOverlay', 'doneOverlay', 'oneOverlay', 'pauseOverlay'];
+	overlays.forEach(function (id) {
+		var el = document.getElementById(id);
+		if (el) el.classList.remove('show');
+	});
+}
+
 // Game started flag
 let gameStarted = false;
 
@@ -132,6 +141,7 @@ function togglePlayPause() {
 		spawnWave();
 		btn.textContent = 'Pause';
 		updateNextWaveBtn();
+		updatePauseBtn();
 
 		// Show "Attack...!!!"
 		document.getElementById('attackOverlay').classList.add('show');
@@ -155,6 +165,7 @@ function togglePlayPause() {
 		pauseOverlay.classList.remove('show');
 		attackOverlay.classList.add('show');
 	}
+	updatePauseBtn();
 }
 
 // Legacy alias so keyboard shortcut still works
@@ -167,6 +178,14 @@ function togglePause() {
 function updateNextWaveBtn() {
 	const btn = document.getElementById('nextWaveBtn');
 	btn.disabled = waveInProgress || !gameStarted || gameOver;
+}
+
+// Update Pause button state - disabled when no wave is in progress
+function updatePauseBtn() {
+	const btn = document.getElementById('playPauseBtn');
+	// Pause is available only when game started, wave is in progress, and game is not over
+	// Also allow unpause when paused
+	btn.disabled = !gameStarted || (!waveInProgress && !isPaused) || gameOver;
 }
 
 // Toggle sell mode
@@ -489,6 +508,21 @@ class Enemy {
 		if (this.pathIndex >= path.length - 1) {
 			lives--;
 			updateUI();
+
+			// Show "Good... ha, ha, ha!!!" when enemy passes through
+			hideAllOverlays();
+			var oneOverlay = document.getElementById('oneOverlay');
+			if (oneOverlay) {
+				oneOverlay.classList.add('show');
+				setTimeout(function () {
+					oneOverlay.classList.remove('show');
+					// Return attackOverlay if wave is still in progress
+					if (waveInProgress && !isPaused && !gameOver) {
+						document.getElementById('attackOverlay').classList.add('show');
+					}
+				}, 2000);
+			}
+
 			if (lives <= 0) {
 				endGame();
 			}
@@ -944,7 +978,12 @@ function spawnWave() {
 	wave++;
 	waveInProgress = true;
 	updateNextWaveBtn();
+	updatePauseBtn();
 	updateUI();
+
+	// Show "Attack...!!!" when wave starts (hide all other overlays)
+	hideAllOverlays();
+	document.getElementById('attackOverlay').classList.add('show');
 
 	// Boss wave every 10 levels
 	const isBossWave = wave % 10 === 0;
@@ -1035,6 +1074,9 @@ function checkWaveComplete() {
 
 	waveInProgress = false;
 
+	// Hide "Attack...!!!" overlay when wave ends
+	document.getElementById('attackOverlay').classList.remove('show');
+
 	// Victory: show immediately after last wave is cleared
 	if (wave >= MAX_WAVE) {
 		winGame();
@@ -1045,6 +1087,17 @@ function checkWaveComplete() {
 	gold += 15 + Math.min(wave * 2, 30);
 	updateUI();
 	updateNextWaveBtn();
+	updatePauseBtn();
+
+	// Show "Done!!!" overlay for 4 seconds
+	hideAllOverlays();
+	var doneOverlay = document.getElementById('doneOverlay');
+	if (doneOverlay) {
+		doneOverlay.classList.add('show');
+		setTimeout(function () {
+			doneOverlay.classList.remove('show');
+		}, 2000);
+	}
 }
 
 // Win game

@@ -287,7 +287,8 @@ body {
 		linear-gradient(90deg, rgba(140, 180, 220, 0.3) 1px, transparent 1px);
 	background-size: 16px 16px;
 	border: none;
-	clip-path: polygon(0% 2%, 4% 0%, 10% 1%, 22% 0%, 35% 2%, 50% 0%, 65% 1%, 80% 0%, 90% 2%, 96% 0%, 100% 1%, 99.45% 81.41%, 85.37% 100%, 75.03% 99.75%, 65% 100%, 50% 99%, 35% 100%, 20% 98%, 8% 100%, 0% 99%);}
+	clip-path: polygon(0% 2%, 4% 0%, 10% 1%, 22% 0%, 35% 2%, 50% 0%, 65% 1%, 80% 0%, 90% 2%, 96% 0%, 100% 1%, 99.45% 81.41%, 85.37% 100%, 75.03% 99.75%, 65% 100%, 50% 99%, 35% 100%, 20% 98%, 8% 100%, 0% 99%);
+}
 
 .tower-btn.selected::before {
 	content: '';
@@ -347,7 +348,7 @@ body {
 	margin-top: 20px;
 }
 
-.control-btn-wrap + .control-btn-wrap {
+.control-btn-wrap+.control-btn-wrap {
 	margin-top: 8px;
 }
 
@@ -409,18 +410,19 @@ body {
 	box-shadow: -2px -2px 3px rgba(0, 0, 0, 0.15), -4px -4px 6px rgba(0, 0, 0, 0.08);
 }
 
-.control-btn.sell-active{
-	clip-path: polygon(0% 3%, 3% 0%, 8% 2%, 20% 0%, 35% 3%, 50% 0%, 65% 2%, 80% 0%, 92% 3%, 97% 0%, 100% 2%, 98.33% 55.82%, 86.10% 96.04%, 78.67% 103.88%, 68% 100%, 50% 98%, 35% 100%, 18% 98%, 5% 100%, 0% 97%);}
+.control-btn.sell-active {
+	clip-path: polygon(0% 3%, 3% 0%, 8% 2%, 20% 0%, 35% 3%, 50% 0%, 65% 2%, 80% 0%, 92% 3%, 97% 0%, 100% 2%, 98.33% 55.82%, 86.10% 96.04%, 78.67% 103.88%, 68% 100%, 50% 98%, 35% 100%, 18% 98%, 5% 100%, 0% 97%);
+}
 
 .control-btn.sell-active::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 25px;
-    height: 25px;
-    background: linear-gradient(135deg, transparent 50%, #e8e5e0 50%, #d8d5d0 100%);
-    box-shadow: -2px -2px 3px rgba(0, 0, 0, 0.15), -4px -4px 6px rgba(0, 0, 0, 0.08);
+	content: '';
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 25px;
+	height: 25px;
+	background: linear-gradient(135deg, transparent 50%, #e8e5e0 50%, #d8d5d0 100%);
+	box-shadow: -2px -2px 3px rgba(0, 0, 0, 0.15), -4px -4px 6px rgba(0, 0, 0, 0.08);
 }
 
 .enemy-info {
@@ -506,7 +508,7 @@ body {
 	z-index: 100;
 	animation: fadeIn 0.5s ease;
 	padding-left: 30%;
-    padding-right: 53%;
+	padding-right: 53%;
 	text-align: center;
 }
 
@@ -599,15 +601,12 @@ body {
 .pause-overlay {
 	position: absolute;
 	top: 10px;
-	left: 325px;
+	right: 160px;
 	display: none;
 	z-index: 10;
 	pointer-events: none;
 }
 
-.pause-overlay#pauseOverlay {
-	left: 265px;
-}
 
 .pause-overlay.show {
 	display: block;
