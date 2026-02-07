@@ -30,6 +30,11 @@ let lastPauseTime = 0;
 let totalPausedTime = 0;
 let sellMode = false;
 
+// Idle taunting system
+let lastWaveEndTime = 0;
+let tauntIntervalId = null;
+let currentTauntIndex = 0;
+
 // Tower types - based on cell count
 const towerTypes = {
 	tower1: { cost: 80, upgradeCost: 100, damage: 20, range: 90, fireRate: 600, cells: 1, name: 'Tower 1' },
@@ -119,11 +124,71 @@ markPathCells();
 
 // Hide all message overlays
 function hideAllOverlays() {
-	var overlays = ['attackOverlay', 'doneOverlay', 'oneOverlay', 'pauseOverlay'];
+	var overlays = ['attackOverlay', 'doneOverlay', 'oneOverlay', 'pauseOverlay', 'tempOverlay'];
 	overlays.forEach(function (id) {
 		var el = document.getElementById(id);
 		if (el) el.classList.remove('show');
 	});
+}
+
+// Taunting messages system
+var tauntMessages = [
+	'Are you scared?',
+	'You are so weak and naive )))',
+	'I feel your fear ))'
+];
+
+function showTaunt() {
+	if (waveInProgress || gameOver) {
+		stopTaunts();
+		return;
+	}
+
+	var tempOverlay = document.getElementById('tempOverlay');
+	if (tempOverlay) {
+		// Update text content - show only current message
+		var textElements = tempOverlay.querySelectorAll('.pause-text');
+		textElements.forEach(function (el, i) {
+			el.style.display = (i === currentTauntIndex) ? 'block' : 'none';
+		});
+		tempOverlay.classList.add('show');
+		console.log('Showing taunt:', currentTauntIndex);
+
+		// Move to next message
+		currentTauntIndex = (currentTauntIndex + 1) % textElements.length;
+	}
+}
+
+var tauntTimeoutId = null;
+
+function startTauntTimer() {
+	// Clear any existing timers first
+	stopTaunts();
+
+	lastWaveEndTime = Date.now();
+
+	// Wait 2 seconds then start showing taunts
+	tauntTimeoutId = setTimeout(function () {
+		if (!waveInProgress && !gameOver) {
+			console.log('Starting taunts');
+			showTaunt();
+			tauntIntervalId = setInterval(showTaunt, 4000);
+		}
+	}, 2000);
+}
+
+function stopTaunts() {
+	if (tauntTimeoutId) {
+		clearTimeout(tauntTimeoutId);
+		tauntTimeoutId = null;
+	}
+	if (tauntIntervalId) {
+		clearInterval(tauntIntervalId);
+		tauntIntervalId = null;
+	}
+	currentTauntIndex = 0;
+	var tempOverlay = document.getElementById('tempOverlay');
+	if (tempOverlay) tempOverlay.classList.remove('show');
 }
 
 // Game started flag
@@ -982,6 +1047,7 @@ function spawnWave() {
 	updateUI();
 
 	// Show "Attack...!!!" when wave starts (hide all other overlays)
+	stopTaunts();
 	hideAllOverlays();
 	document.getElementById('attackOverlay').classList.add('show');
 
@@ -1098,6 +1164,9 @@ function checkWaveComplete() {
 			doneOverlay.classList.remove('show');
 		}, 2000);
 	}
+
+	// Start idle taunt timer
+	startTauntTimer();
 }
 
 // Win game
@@ -1408,4 +1477,5 @@ function drawTowerPreviews() {
 // Start game
 drawTowerPreviews();
 updateUI();
+startTauntTimer(); // Start taunts immediately on load
 gameLoop(0);
