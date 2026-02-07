@@ -1,6 +1,19 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+// Decorative images on the field
+const goblinsImg = new Image();
+goblinsImg.src = 'assets/images/goblins.png';
+
+const knightsImg = new Image();
+knightsImg.src = 'assets/images/knights.png';
+
+const caveImg = new Image();
+caveImg.src = 'assets/images/cave.png';
+
+const castleImg = new Image();
+castleImg.src = 'assets/images/castle.png';
+
 // Game state
 let gold = 300;
 let lives = 5;
@@ -730,275 +743,26 @@ function drawRoundedPathWithWobble(points, wobble, radius) {
 
 // Draw cave at the start of the path (enemy spawn point)
 function drawCave() {
+	if (!caveImg.complete || !caveImg.naturalWidth) return;
+
 	const caveX = path[0].x;
 	const caveY = path[0].y;
+	const cw = 150;
+	const ch = cw * (caveImg.naturalHeight / caveImg.naturalWidth);
 
-	ctx.strokeStyle = '#2255cc';
-	ctx.lineWidth = 2;
-	ctx.lineCap = 'round';
-	ctx.lineJoin = 'round';
-
-	const w = (seed) => Math.sin(seed * 0.7) * 0.8;
-
-	// Rounded cave opening
-	const caveW = 48;
-	const caveH = 38;
-
-	// Cave arch (rounded top)
-	ctx.beginPath();
-	ctx.moveTo(caveX - caveW / 2 - 3 + w(1), caveY + 18 + w(2));
-	ctx.lineTo(caveX - caveW / 2 + w(3), caveY + w(4));
-	ctx.quadraticCurveTo(
-		caveX - caveW / 2 + 5 + w(5), caveY - caveH + 10 + w(6),
-		caveX + w(7), caveY - caveH + w(8)
-	);
-	ctx.quadraticCurveTo(
-		caveX + caveW / 2 - 5 + w(9), caveY - caveH + 10 + w(10),
-		caveX + caveW / 2 + w(11), caveY + w(12)
-	);
-	ctx.lineTo(caveX + caveW / 2 + 3 + w(13), caveY + 18 + w(14));
-	ctx.stroke();
-
-	// Top fangs hanging down
-	ctx.beginPath();
-	ctx.moveTo(caveX - 14 + w(20), caveY - caveH + 12 + w(21));
-	ctx.lineTo(caveX - 10 + w(22), caveY - caveH + 28 + w(23));
-	ctx.lineTo(caveX - 6 + w(24), caveY - caveH + 14 + w(25));
-	ctx.stroke();
-
-	ctx.beginPath();
-	ctx.moveTo(caveX + 6 + w(26), caveY - caveH + 14 + w(27));
-	ctx.lineTo(caveX + 10 + w(28), caveY - caveH + 28 + w(29));
-	ctx.lineTo(caveX + 14 + w(30), caveY - caveH + 12 + w(31));
-	ctx.stroke();
-
-	// Bottom fangs pointing up
-	ctx.beginPath();
-	ctx.moveTo(caveX - 10 + w(40), caveY + 16 + w(41));
-	ctx.lineTo(caveX - 6 + w(42), caveY + w(43));
-	ctx.lineTo(caveX - 2 + w(44), caveY + 14 + w(45));
-	ctx.stroke();
-
-	ctx.beginPath();
-	ctx.moveTo(caveX + 2 + w(46), caveY + 14 + w(47));
-	ctx.lineTo(caveX + 6 + w(48), caveY + w(49));
-	ctx.lineTo(caveX + 10 + w(50), caveY + 16 + w(51));
-	ctx.stroke();
-
+	ctx.drawImage(caveImg, caveX - cw / 2 + 18, caveY - ch + 56, cw, ch);
 }
 
 // Draw epic castle at the end of the path (player base to defend)
 function drawCastle() {
+	if (!castleImg.complete || !castleImg.naturalWidth) return;
+
 	const castleX = path[path.length - 1].x;
-	const castleY = path[path.length - 1].y + 20;
+	const castleY = path[path.length - 1].y;
+	const cw = 210;
+	const ch = cw * (castleImg.naturalHeight / castleImg.naturalWidth);
 
-	ctx.strokeStyle = '#2255cc';
-	ctx.lineWidth = 2;
-	ctx.lineCap = 'round';
-	ctx.lineJoin = 'round';
-
-	// Subtle wobble for hand-drawn effect
-	const w = (seed) => Math.sin(seed * 0.7) * 0.8;
-
-	// Castle dimensions
-	const baseWidth = 80;
-	const baseHeight = 35;
-	const baseLeft = castleX - baseWidth / 2;
-	const baseBottom = castleY;
-	const baseTop = baseBottom - baseHeight;
-
-	// Main wall (closed rectangle)
-	ctx.beginPath();
-	ctx.moveTo(baseLeft + w(1), baseBottom + w(2));
-	ctx.lineTo(baseLeft + w(3), baseTop + w(4));
-	ctx.lineTo(baseLeft + baseWidth + w(5), baseTop + w(6));
-	ctx.lineTo(baseLeft + baseWidth + w(7), baseBottom + w(8));
-	ctx.closePath();
-	ctx.stroke();
-
-	// Crenellations on main wall
-	const crenelW = 6;
-	const crenelH = 8;
-	for (let i = 0; i < 7; i++) {
-		const cx = baseLeft + 8 + i * 10;
-		ctx.beginPath();
-		ctx.moveTo(cx + w(10 + i), baseTop + w(11 + i));
-		ctx.lineTo(cx + w(12 + i), baseTop - crenelH + w(13 + i));
-		ctx.lineTo(cx + crenelW + w(14 + i), baseTop - crenelH + w(15 + i));
-		ctx.lineTo(cx + crenelW + w(16 + i), baseTop + w(17 + i));
-		ctx.stroke();
-	}
-
-	// LEFT TOWER
-	const towerW = 20;
-	const towerH = 45;
-	const leftTowerX = baseLeft - 5;
-	const leftTowerTop = baseBottom - towerH;
-
-	ctx.beginPath();
-	ctx.moveTo(leftTowerX + w(20), baseBottom + w(21));
-	ctx.lineTo(leftTowerX + w(22), leftTowerTop + w(23));
-	ctx.lineTo(leftTowerX + towerW + w(24), leftTowerTop + w(25));
-	ctx.lineTo(leftTowerX + towerW + w(26), baseBottom + w(27));
-	ctx.stroke();
-
-	// Left tower crenellations
-	for (let i = 0; i < 2; i++) {
-		const cx = leftTowerX + 3 + i * 9;
-		ctx.beginPath();
-		ctx.moveTo(cx + w(30 + i), leftTowerTop + w(31 + i));
-		ctx.lineTo(cx + w(32 + i), leftTowerTop - 7 + w(33 + i));
-		ctx.lineTo(cx + 6 + w(34 + i), leftTowerTop - 7 + w(35 + i));
-		ctx.lineTo(cx + 6 + w(36 + i), leftTowerTop + w(37 + i));
-		ctx.stroke();
-	}
-
-	// Left tower roof
-	ctx.beginPath();
-	ctx.moveTo(leftTowerX - 3 + w(40), leftTowerTop - 7 + w(41));
-	ctx.lineTo(leftTowerX + towerW / 2 + w(42), leftTowerTop - 28 + w(43));
-	ctx.lineTo(leftTowerX + towerW + 3 + w(44), leftTowerTop - 7 + w(45));
-	ctx.stroke();
-
-	// LEFT TOWER window
-	ctx.beginPath();
-	ctx.arc(leftTowerX + towerW / 2 + w(46) * 0.3, leftTowerTop + 18 + w(47) * 0.3, 4, 0, Math.PI * 2);
-	ctx.stroke();
-
-	// RIGHT TOWER
-	const rightTowerX = baseLeft + baseWidth - towerW + 5;
-
-	ctx.beginPath();
-	ctx.moveTo(rightTowerX + w(50), baseBottom + w(51));
-	ctx.lineTo(rightTowerX + w(52), leftTowerTop + w(53));
-	ctx.lineTo(rightTowerX + towerW + w(54), leftTowerTop + w(55));
-	ctx.lineTo(rightTowerX + towerW + w(56), baseBottom + w(57));
-	ctx.stroke();
-
-	// Right tower crenellations
-	for (let i = 0; i < 2; i++) {
-		const cx = rightTowerX + 3 + i * 9;
-		ctx.beginPath();
-		ctx.moveTo(cx + w(60 + i), leftTowerTop + w(61 + i));
-		ctx.lineTo(cx + w(62 + i), leftTowerTop - 7 + w(63 + i));
-		ctx.lineTo(cx + 6 + w(64 + i), leftTowerTop - 7 + w(65 + i));
-		ctx.lineTo(cx + 6 + w(66 + i), leftTowerTop + w(67 + i));
-		ctx.stroke();
-	}
-
-	// Right tower roof
-	ctx.beginPath();
-	ctx.moveTo(rightTowerX - 3 + w(70), leftTowerTop - 7 + w(71));
-	ctx.lineTo(rightTowerX + towerW / 2 + w(72), leftTowerTop - 28 + w(73));
-	ctx.lineTo(rightTowerX + towerW + 3 + w(74), leftTowerTop - 7 + w(75));
-	ctx.stroke();
-
-	// RIGHT TOWER window
-	ctx.beginPath();
-	ctx.arc(rightTowerX + towerW / 2 + w(76) * 0.3, leftTowerTop + 18 + w(77) * 0.3, 4, 0, Math.PI * 2);
-	ctx.stroke();
-
-	// CENTER TOWER (tallest)
-	const centerW = 26;
-	const centerH = 60;
-	const centerX = castleX - centerW / 2;
-	const centerTop = baseBottom - centerH;
-
-	ctx.beginPath();
-	ctx.moveTo(centerX + w(80), baseTop + w(81));
-	ctx.lineTo(centerX + w(82), centerTop + w(83));
-	ctx.lineTo(centerX + centerW + w(84), centerTop + w(85));
-	ctx.lineTo(centerX + centerW + w(86), baseTop + w(87));
-	ctx.stroke();
-
-	// Center tower crenellations
-	for (let i = 0; i < 3; i++) {
-		const cx = centerX + 2 + i * 8;
-		ctx.beginPath();
-		ctx.moveTo(cx + w(90 + i), centerTop + w(91 + i));
-		ctx.lineTo(cx + w(92 + i), centerTop - 8 + w(93 + i));
-		ctx.lineTo(cx + 6 + w(94 + i), centerTop - 8 + w(95 + i));
-		ctx.lineTo(cx + 6 + w(96 + i), centerTop + w(97 + i));
-		ctx.stroke();
-	}
-
-	// Center tower roof (tallest)
-	ctx.beginPath();
-	ctx.moveTo(centerX - 4 + w(100), centerTop - 8 + w(101));
-	ctx.lineTo(centerX + centerW / 2 + w(102), centerTop - 35 + w(103));
-	ctx.lineTo(centerX + centerW + 4 + w(104), centerTop - 8 + w(105));
-	ctx.stroke();
-
-	// Center tower windows
-	ctx.beginPath();
-	ctx.arc(centerX + centerW / 2 + w(106) * 0.3, centerTop + 15 + w(107) * 0.3, 4, 0, Math.PI * 2);
-	ctx.stroke();
-	ctx.beginPath();
-	ctx.arc(centerX + centerW / 2 + w(108) * 0.3, centerTop + 30 + w(109) * 0.3, 4, 0, Math.PI * 2);
-	ctx.stroke();
-
-	// Gate (arched door)
-	const gateW = 18;
-	const gateH = 22;
-	const gateX = castleX;
-	const gateY = baseBottom;
-
-	ctx.beginPath();
-	ctx.moveTo(gateX - gateW / 2 + w(110), gateY + w(111));
-	ctx.lineTo(gateX - gateW / 2 + w(112), gateY - gateH + 9 + w(113));
-	ctx.arc(gateX, gateY - gateH + 9, gateW / 2, Math.PI, 0, false);
-	ctx.lineTo(gateX + gateW / 2 + w(114), gateY + w(115));
-	ctx.stroke();
-
-	// Gate bars
-	ctx.lineWidth = 1.5;
-	for (let i = 0; i < 3; i++) {
-		const bx = gateX - 5 + i * 5;
-		ctx.beginPath();
-		ctx.moveTo(bx + w(116 + i), gateY - gateH + 12 + w(117 + i));
-		ctx.lineTo(bx + w(118 + i), gateY + w(119 + i));
-		ctx.stroke();
-	}
-	ctx.lineWidth = 2;
-
-	// Flags on towers
-	// Center flag (main)
-	const flagX = centerX + centerW / 2;
-	const flagY = centerTop - 35;
-	ctx.beginPath();
-	ctx.moveTo(flagX + w(120), flagY + w(121));
-	ctx.lineTo(flagX + w(122), flagY - 18 + w(123));
-	ctx.stroke();
-	ctx.beginPath();
-	ctx.moveTo(flagX + w(124), flagY - 18 + w(125));
-	ctx.quadraticCurveTo(flagX + 8 + w(126), flagY - 14 + w(127), flagX + 14 + w(128), flagY - 16 + w(129));
-	ctx.quadraticCurveTo(flagX + 8 + w(130), flagY - 10 + w(131), flagX + w(132), flagY - 8 + w(133));
-	ctx.stroke();
-
-	// Left tower flag
-	const lfX = leftTowerX + towerW / 2;
-	const lfY = leftTowerTop - 28;
-	ctx.beginPath();
-	ctx.moveTo(lfX + w(140), lfY + w(141));
-	ctx.lineTo(lfX + w(142), lfY - 14 + w(143));
-	ctx.stroke();
-	ctx.beginPath();
-	ctx.moveTo(lfX + w(144), lfY - 14 + w(145));
-	ctx.quadraticCurveTo(lfX + 6 + w(146), lfY - 11 + w(147), lfX + 11 + w(148), lfY - 13 + w(149));
-	ctx.quadraticCurveTo(lfX + 6 + w(150), lfY - 8 + w(151), lfX + w(152), lfY - 6 + w(153));
-	ctx.stroke();
-
-	// Right tower flag
-	const rfX = rightTowerX + towerW / 2;
-	ctx.beginPath();
-	ctx.moveTo(rfX + w(160), lfY + w(161));
-	ctx.lineTo(rfX + w(162), lfY - 14 + w(163));
-	ctx.stroke();
-	ctx.beginPath();
-	ctx.moveTo(rfX + w(164), lfY - 14 + w(165));
-	ctx.quadraticCurveTo(rfX + 6 + w(166), lfY - 11 + w(167), rfX + 11 + w(168), lfY - 13 + w(169));
-	ctx.quadraticCurveTo(rfX + 6 + w(170), lfY - 8 + w(171), rfX + w(172), lfY - 6 + w(173));
-	ctx.stroke();
+	ctx.drawImage(castleImg, castleX - cw / 2, canvas.height - ch, cw, ch);
 }
 
 // Draw path - two parallel blue pen lines with rounded corners and hand-drawn effect
@@ -1034,6 +798,35 @@ function drawPath() {
 }
 
 // Draw grid - notebook paper style
+// Draw decorative images on the field
+function drawFieldDecor() {
+	ctx.globalAlpha = 1;
+
+	ctx.save();
+	ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
+	ctx.shadowBlur = 8;
+	ctx.shadowOffsetX = 3;
+	ctx.shadowOffsetY = 3;
+
+	// Goblins — top-right
+	if (goblinsImg.complete && goblinsImg.naturalWidth) {
+		const gw = 138;
+		const gh = gw * (goblinsImg.naturalHeight / goblinsImg.naturalWidth);
+		ctx.drawImage(goblinsImg, canvas.width - gw - 15, 10, gw, gh);
+	}
+
+	// Knights — bottom-left
+	if (knightsImg.complete && knightsImg.naturalWidth) {
+		const kw = 125;
+		const kh = kw * (knightsImg.naturalHeight / knightsImg.naturalWidth);
+		ctx.drawImage(knightsImg, 15, canvas.height - kh - 15, kw, kh);
+	}
+
+	ctx.restore();
+
+	ctx.globalAlpha = 1;
+}
+
 function drawGrid() {
 	const smallGrid = 16; // Small visual grid for notebook look
 
@@ -1413,6 +1206,7 @@ function gameLoop(time) {
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	drawGrid();
+	drawFieldDecor();
 	drawPath();
 	drawCave();
 	drawCastle();
