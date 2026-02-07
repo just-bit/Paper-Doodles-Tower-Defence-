@@ -502,7 +502,7 @@ body {
 	display: none;
 	justify-content: center;
 	flex-direction: column;
-	gap: 20px;
+	gap: 10px;
 	z-index: 100;
 	animation: fadeIn 0.5s ease;
 	padding-left: 30%;
@@ -522,6 +522,7 @@ body {
 
 .game-over-overlay.show {
 	display: flex;
+	align-items: center;
 }
 
 .game-over-text {
@@ -530,6 +531,13 @@ body {
 	font-weight: 700;
 	transform: rotate(-3deg);
 	color: var(--blue);
+	margin-top: -30px;
+}
+
+.game-over-img {
+	max-width: 250px;
+	height: auto;
+	margin-top: -138px;
 }
 
 .final-score {

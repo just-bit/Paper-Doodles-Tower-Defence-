@@ -824,7 +824,7 @@ function drawFieldDecor() {
 
 	// Knights — bottom-left
 	if (knightsImg.complete && knightsImg.naturalWidth) {
-		const kw = 125;
+		const kw = 170;
 		const kh = kw * (knightsImg.naturalHeight / knightsImg.naturalWidth);
 		ctx.drawImage(knightsImg, 15, canvas.height - kh - 15, kw, kh);
 	}
