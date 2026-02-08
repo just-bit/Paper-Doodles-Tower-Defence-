@@ -15,7 +15,7 @@ const castleImg = new Image();
 castleImg.src = 'assets/images/castle.png';
 
 // Game config
-const MAX_WAVE = 2;
+const MAX_WAVE = 10;
 const TAUNT_DELAY = 15000;
 
 // Game state
@@ -36,6 +36,10 @@ let lastWaveEndTime = 0;
 let tauntIntervalId = null;
 let currentTauntIndex = 0;
 let tauntsWereShowing = false;
+
+// Knights overlay message rotation
+let currentKnightMessageIndex = 0;
+let currentKnightTauntIndex = 0;
 
 // Tower types - based on cell count
 const towerTypes = {
@@ -126,7 +130,7 @@ markPathCells();
 
 // Hide all message overlays
 function hideAllOverlays() {
-	var overlays = ['attackOverlay', 'doneOverlay', 'oneOverlay', 'pauseOverlay', 'tempOverlay', 'finallyOverlay'];
+	var overlays = ['attackOverlay', 'doneOverlay', 'oneOverlay', 'pauseOverlay', 'tempOverlay', 'finallyOverlay', 'knightsOverlay', 'knightsTempOverlay'];
 	overlays.forEach(function (id) {
 		var el = document.getElementById(id);
 		if (el) el.classList.remove('show');
@@ -146,6 +150,7 @@ function showTaunt() {
 		return;
 	}
 
+	// Show goblin taunts (tempOverlay)
 	var tempOverlay = document.getElementById('tempOverlay');
 	if (tempOverlay) {
 		// Update text content - show only current message
@@ -159,6 +164,20 @@ function showTaunt() {
 
 		// Move to next message
 		currentTauntIndex = (currentTauntIndex + 1) % textElements.length;
+	}
+
+	// Show knight taunts (knightsTempOverlay)
+	var knightsTempOverlay = document.getElementById('knightsTempOverlay');
+	if (knightsTempOverlay) {
+		var knightTextElements = knightsTempOverlay.querySelectorAll('.pause-text');
+		knightTextElements.forEach(function (el, i) {
+			el.style.display = (i === currentKnightTauntIndex) ? 'block' : 'none';
+		});
+		knightsTempOverlay.classList.add('show');
+		console.log('Showing knight taunt:', currentKnightTauntIndex);
+
+		// Move to next message
+		currentKnightTauntIndex = (currentKnightTauntIndex + 1) % knightTextElements.length;
 	}
 }
 
@@ -190,8 +209,11 @@ function stopTaunts() {
 		tauntIntervalId = null;
 	}
 	currentTauntIndex = 0;
+	currentKnightTauntIndex = 0;
 	var tempOverlay = document.getElementById('tempOverlay');
 	if (tempOverlay) tempOverlay.classList.remove('show');
+	var knightsTempOverlay = document.getElementById('knightsTempOverlay');
+	if (knightsTempOverlay) knightsTempOverlay.classList.remove('show');
 }
 
 // Game started flag
@@ -1177,14 +1199,30 @@ function checkWaveComplete() {
 	updateNextWaveBtn();
 	updatePauseBtn();
 
-	// Show "Done!!!"
+	// Show "Done!!!" and knights overlay
 	hideAllOverlays();
 	var doneOverlay = document.getElementById('doneOverlay');
+	var knightsOverlay = document.getElementById('knightsOverlay');
 	if (doneOverlay) {
 		doneOverlay.classList.add('show');
 		setTimeout(function () {
 			doneOverlay.classList.remove('show');
 		}, 1000);
+	}
+	// Show knights overlay near the knight image (one message per wave, rotating)
+	if (knightsOverlay) {
+		var knightMessages = knightsOverlay.querySelectorAll('.pause-text');
+		// Hide all messages, show only current one
+		knightMessages.forEach(function (el, i) {
+			el.style.display = (i === currentKnightMessageIndex) ? 'block' : 'none';
+		});
+		// Move to next message for next wave
+		currentKnightMessageIndex = (currentKnightMessageIndex + 1) % knightMessages.length;
+
+		knightsOverlay.classList.add('show');
+		setTimeout(function () {
+			knightsOverlay.classList.remove('show');
+		}, 2000);
 	}
 
 	// Start idle taunt timer

@@ -621,6 +621,14 @@ body {
 	text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
 }
 
+/* Knights overlay - positioned near the knight image (bottom-left) */
+.pause-overlay.pause-overlay-knights {
+	top: auto;
+	right: auto;
+	bottom: 200px;
+	left: 165px;
+}
+
 /* Paper Doodles title - torn paper effect */
 .paper-title {
 	position: fixed;
