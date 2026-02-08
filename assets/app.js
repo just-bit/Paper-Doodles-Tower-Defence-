@@ -1177,14 +1177,14 @@ function checkWaveComplete() {
 	updateNextWaveBtn();
 	updatePauseBtn();
 
-	// Show "Done!!!" overlay for 4 seconds
+	// Show "Done!!!"
 	hideAllOverlays();
 	var doneOverlay = document.getElementById('doneOverlay');
 	if (doneOverlay) {
 		doneOverlay.classList.add('show');
 		setTimeout(function () {
 			doneOverlay.classList.remove('show');
-		}, 2000);
+		}, 1000);
 	}
 
 	// Start idle taunt timer
