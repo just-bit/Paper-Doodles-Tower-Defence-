@@ -16,7 +16,7 @@ castleImg.src = 'assets/images/castle.png';
 
 // Game config
 const MAX_WAVE = 2;
-const TAUNT_DELAY = 10000;
+const TAUNT_DELAY = 15000;
 
 // Game state
 let gold = 500;
