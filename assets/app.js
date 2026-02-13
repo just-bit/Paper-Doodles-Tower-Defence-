@@ -15,11 +15,12 @@ const castleImg = new Image();
 castleImg.src = 'assets/images/castle.png';
 
 // Game config
-const MAX_WAVE = 10;
-const TAUNT_DELAY = 15000;
+const MAX_WAVE = 100;
+const TAUNT_DELAY = 3000;
+const TAUNT_DELAY_AFTER_WAVE = 7000;
 
 // Game state
-let gold = 500;
+let gold = 750;
 let lives = 5;
 let wave = 0;
 let score = 0;
@@ -36,16 +37,16 @@ let lastWaveEndTime = 0;
 let tauntIntervalId = null;
 let currentTauntIndex = 0;
 let tauntsWereShowing = false;
+let isGoblinTurn = true; // alternates between goblin and knight taunts
 
 // Knights overlay message rotation
 let currentKnightMessageIndex = 0;
-let currentKnightTauntIndex = 0;
 
 // Tower types - based on cell count
 const towerTypes = {
-	tower1: { cost: 80, upgradeCost: 100, damage: 20, range: 90, fireRate: 600, cells: 1, name: 'Tower 1' },
-	tower2: { cost: 150, upgradeCost: 170, damage: 15, range: 130, fireRate: 500, cells: 2, name: 'Tower 2' },
-	tower3: { cost: 250, upgradeCost: 300, damage: 25, range: 180, fireRate: 550, cells: 3, name: 'Tower 3' }
+	tower1: { cost: 80, upgradeCost: 100, damage: 20, range: 70, fireRate: 600, cells: 1, name: 'Tower 1' },
+	tower2: { cost: 150, upgradeCost: 170, damage: 15, range: 84, fireRate: 500, cells: 2, name: 'Tower 2' },
+	tower3: { cost: 250, upgradeCost: 300, damage: 25, range: 101, fireRate: 550, cells: 3, name: 'Tower 3' }
 };
 
 // Enemy definitions
@@ -53,7 +54,7 @@ const enemyTypes = {
 	basic: { hp: 160, speed: 2.2, reward: 6, color: '#c23a3a', size: 10 },
 	fast: { hp: 90, speed: 4.5, reward: 8, color: '#d4762c', size: 8 },
 	tank: { hp: 450, speed: 1.5, reward: 20, color: '#6a3a9a', size: 14 },
-	boss: { hp: 900, speed: 1.2, reward: 50, color: '#d4326c', size: 20 }
+	boss: { hp: 1170, speed: 1.2, reward: 50, color: '#d4326c', size: 20 }
 };
 
 // Path waypoints - adjusted for vertical A5 format
@@ -150,53 +151,61 @@ function showTaunt() {
 		return;
 	}
 
-	// Show goblin taunts (tempOverlay)
 	var tempOverlay = document.getElementById('tempOverlay');
-	if (tempOverlay) {
-		// Update text content - show only current message
-		var textElements = tempOverlay.querySelectorAll('.pause-text');
-		textElements.forEach(function (el, i) {
-			el.style.display = (i === currentTauntIndex) ? 'block' : 'none';
-		});
-		tempOverlay.classList.add('show');
-		tauntsWereShowing = true;
-		console.log('Showing taunt:', currentTauntIndex);
-
-		// Move to next message
-		currentTauntIndex = (currentTauntIndex + 1) % textElements.length;
-	}
-
-	// Show knight taunts (knightsTempOverlay)
 	var knightsTempOverlay = document.getElementById('knightsTempOverlay');
-	if (knightsTempOverlay) {
-		var knightTextElements = knightsTempOverlay.querySelectorAll('.pause-text');
-		knightTextElements.forEach(function (el, i) {
-			el.style.display = (i === currentKnightTauntIndex) ? 'block' : 'none';
-		});
-		knightsTempOverlay.classList.add('show');
-		console.log('Showing knight taunt:', currentKnightTauntIndex);
 
-		// Move to next message
-		currentKnightTauntIndex = (currentKnightTauntIndex + 1) % knightTextElements.length;
+	if (isGoblinTurn) {
+		// Hide knight overlay, show goblin overlay
+		if (knightsTempOverlay) knightsTempOverlay.classList.remove('show');
+
+		if (tempOverlay) {
+			var textElements = tempOverlay.querySelectorAll(':scope > .pause-text');
+			textElements.forEach(function (el, i) {
+				el.style.display = (i === currentTauntIndex % textElements.length) ? 'block' : 'none';
+			});
+			tempOverlay.classList.add('show');
+			tauntsWereShowing = true;
+		}
+	} else {
+		// Hide goblin overlay, show knight overlay
+		if (tempOverlay) tempOverlay.classList.remove('show');
+
+		if (knightsTempOverlay) {
+			var knightTextElements = knightsTempOverlay.querySelectorAll(':scope > .pause-text');
+			knightTextElements.forEach(function (el, i) {
+				el.style.display = (i === currentTauntIndex % knightTextElements.length) ? 'block' : 'none';
+			});
+			knightsTempOverlay.classList.add('show');
+			tauntsWereShowing = true;
+		}
+
+		// Advance shared index after both goblin and knight showed the same phrase
+		var maxLen = Math.max(
+			tempOverlay ? tempOverlay.querySelectorAll(':scope > .pause-text').length : 1,
+			knightsTempOverlay ? knightsTempOverlay.querySelectorAll(':scope > .pause-text').length : 1
+		);
+		currentTauntIndex = (currentTauntIndex + 1) % maxLen;
 	}
+
+	isGoblinTurn = !isGoblinTurn;
 }
 
 var tauntTimeoutId = null;
 
-function startTauntTimer() {
+function startTauntTimer(delay) {
 	// Clear any existing timers first
 	stopTaunts();
 
 	lastWaveEndTime = Date.now();
 
-	// Wait TAUNT_DELAY then start showing taunts
+	// Wait then start showing taunts
 	tauntTimeoutId = setTimeout(function () {
 		if (!waveInProgress && !gameOver) {
 			console.log('Starting taunts');
 			showTaunt();
-			tauntIntervalId = setInterval(showTaunt, 8000);
+			tauntIntervalId = setInterval(showTaunt, 4000);
 		}
-	}, TAUNT_DELAY);
+	}, delay || TAUNT_DELAY);
 }
 
 function stopTaunts() {
@@ -208,8 +217,7 @@ function stopTaunts() {
 		clearInterval(tauntIntervalId);
 		tauntIntervalId = null;
 	}
-	currentTauntIndex = 0;
-	currentKnightTauntIndex = 0;
+	isGoblinTurn = true;
 	var tempOverlay = document.getElementById('tempOverlay');
 	if (tempOverlay) tempOverlay.classList.remove('show');
 	var knightsTempOverlay = document.getElementById('knightsTempOverlay');
@@ -1153,15 +1161,20 @@ function spawnWave() {
 		const enemy = new Enemy(type);
 		enemy.hp *= 1 + (wave - 1) * 0.08;         // +8% HP per wave
 
-		// Bosses always get +25% HP on top of general scaling
-		if (type === 'boss') {
-			enemy.hp *= 1.25;
+		// After wave 10: all enemies get +100% HP
+		if (wave > 10) {
+			enemy.hp *= 2;
 		}
 
-		// After wave 80: bosses get extra +25% HP and move faster
+		// Bosses always get more HP on top of general scaling
+		if (type === 'boss') {
+			enemy.hp *= 2;
+		}
+
+		// After wave 80: bosses get extra more HP and move faster
 		if (wave > 80 && type === 'boss') {
-			enemy.hp *= 1.25;
-			enemy.speed *= 1.3;
+			enemy.hp *= 1.5;
+			enemy.speed *= 1.4;
 			enemy.baseSpeed = enemy.speed;
 		}
 
@@ -1225,8 +1238,8 @@ function checkWaveComplete() {
 		}, 2000);
 	}
 
-	// Start idle taunt timer
-	startTauntTimer();
+	// Start idle taunt timer after wave
+	startTauntTimer(TAUNT_DELAY_AFTER_WAVE);
 }
 
 // Win game
