@@ -21,7 +21,7 @@ const TAUNT_DELAY_AFTER_WAVE = 7000;
 
 // Game state
 let gold = 750;
-let lives = 5;
+let lives = 15;
 let wave = 0;
 let score = 0;
 let selectedTower = 'tower1';
@@ -357,7 +357,7 @@ class Tower {
 	// Upgrade specific cell
 	upgradeCell(cellIndex) {
 		if (cellIndex < 0 || cellIndex >= this.cellCount) return false;
-		if (this.cells[cellIndex].level >= 3) return false;
+		if (this.cells[cellIndex].level >= 5) return false;
 		if (gold < this.upgradeCost) return false;
 
 		gold -= this.upgradeCost;
@@ -1109,21 +1109,31 @@ function spawnWave() {
 
 	// Build spawn queue based on wave phase
 	const spawnQueue = [];
-	const enemyCount = 6 + wave * 3;
+	const enemyCount = Math.floor(6 + wave * 2.2);
 
 	if (isBossWave) {
 		// Boss wave: N bosses + N*2 tanks
 		for (let i = 0; i < bossWaveTier; i++) spawnQueue.push('boss');
 		for (let i = 0; i < bossWaveTier * 2; i++) spawnQueue.push('tank');
 	} else if (wave > 60) {
-		// 61-99: only bosses
-		const count = Math.floor(enemyCount * 0.3);
-		for (let i = 0; i < count; i++) spawnQueue.push('boss');
+		// 61-99: boss-heavy mix with tanks and fast
+		for (let i = 0; i < enemyCount; i++) {
+			const rand = Math.random();
+			if (rand < 0.35) spawnQueue.push('boss');
+			else if (rand < 0.65) spawnQueue.push('tank');
+			else spawnQueue.push('fast');
+		}
 	} else if (wave > 40) {
-		// 41-59: only tanks
-		for (let i = 0; i < enemyCount; i++) spawnQueue.push('tank');
+		// 41-60: tank-heavy mix with fast and some bosses
+		for (let i = 0; i < enemyCount; i++) {
+			const rand = Math.random();
+			if (rand < 0.10) spawnQueue.push('boss');
+			else if (rand < 0.55) spawnQueue.push('tank');
+			else if (rand < 0.85) spawnQueue.push('fast');
+			else spawnQueue.push('basic');
+		}
 	} else if (wave > 20) {
-		// 21-39: no basic, more fast + some tanks
+		// 21-40: no basic, more fast + some tanks
 		for (let i = 0; i < enemyCount; i++) {
 			const rand = Math.random();
 			if (rand < 0.35) {
@@ -1159,22 +1169,23 @@ function spawnWave() {
 
 		// Wave scaling - enemies get stronger every wave
 		const enemy = new Enemy(type);
-		enemy.hp *= 1 + (wave - 1) * 0.08;         // +8% HP per wave
+		enemy.hp *= 1 + (wave - 1) * 0.055;         // +5.5% HP per wave
 
-		// After wave 10: all enemies get +100% HP
-		if (wave > 10) {
-			enemy.hp *= 2;
+		// Gradual HP scaling from wave 5 to 25 (×1 → ×2, smooth ramp)
+		if (wave > 5) {
+			const bonusMult = Math.min((wave - 5) / 20, 1.0);
+			enemy.hp *= 1 + bonusMult;
 		}
 
-		// Bosses always get more HP on top of general scaling
+		// Bosses get extra HP on top of general scaling
 		if (type === 'boss') {
-			enemy.hp *= 2;
+			enemy.hp *= 2.5;
 		}
 
-		// After wave 80: bosses get extra more HP and move faster
+		// After wave 80: bosses get extra HP and move faster
 		if (wave > 80 && type === 'boss') {
-			enemy.hp *= 1.5;
-			enemy.speed *= 1.4;
+			enemy.hp *= 1.3;
+			enemy.speed *= 1.2;
 			enemy.baseSpeed = enemy.speed;
 		}
 
@@ -1184,7 +1195,7 @@ function spawnWave() {
 
 		enemy.maxHp = enemy.hp;
 		const tier = Math.floor((wave - 1) / 10);
-		enemy.reward = Math.floor(enemy.reward * (1 + tier * 0.05));
+		enemy.reward = Math.floor(enemy.reward * (1 + tier * 0.15));
 
 		enemies.push(enemy);
 		spawned++;
@@ -1207,7 +1218,13 @@ function checkWaveComplete() {
 		return;
 	}
 
-	gold += 15 + Math.min(wave * 2, 30);
+	gold += 20 + Math.min(wave * 3, 80);
+
+	// Recover +2 lives after boss waves (every 10th wave)
+	if (wave % 10 === 0 && lives < 15) {
+		lives = Math.min(lives + 2, 15);
+	}
+
 	updateUI();
 	updateNextWaveBtn();
 	updatePauseBtn();
