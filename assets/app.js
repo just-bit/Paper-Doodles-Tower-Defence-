@@ -18,9 +18,10 @@ castleImg.src = 'assets/images/castle.png';
 const MAX_WAVE = 100;
 const TAUNT_DELAY = 3000;
 const TAUNT_DELAY_AFTER_WAVE = 7000;
+const AUTO_NEXT_WAVE = 15000;
 
 // Game state
-let gold = 750;
+let gold = 600;
 let lives = 15;
 let wave = 0;
 let score = 0;
@@ -31,6 +32,8 @@ let isPaused = false;
 let lastPauseTime = 0;
 let totalPausedTime = 0;
 let sellMode = false;
+let nextWaveTimer = null;
+let nextWaveTimerDuration = AUTO_NEXT_WAVE;
 
 // Idle taunting system
 let lastWaveEndTime = 0;
@@ -44,9 +47,9 @@ let currentKnightMessageIndex = 0;
 
 // Tower types - based on cell count
 const towerTypes = {
-	tower1: { cost: 80, upgradeCost: 100, damage: 20, range: 70, fireRate: 600, cells: 1, name: 'Tower 1' },
-	tower2: { cost: 150, upgradeCost: 170, damage: 15, range: 84, fireRate: 500, cells: 2, name: 'Tower 2' },
-	tower3: { cost: 250, upgradeCost: 300, damage: 25, range: 101, fireRate: 550, cells: 3, name: 'Tower 3' }
+	tower1: { cost: 80, upgradeCost: 100, damage: 20, range: 70, fireRate: 300, cells: 1, name: 'Tower 1' },
+	tower2: { cost: 150, upgradeCost: 170, damage: 20, range: 84, fireRate: 700, cells: 2, name: 'Tower 2' },
+	tower3: { cost: 250, upgradeCost: 300, damage: 20, range: 101, fireRate: 9000, cells: 3, name: 'Tower 3' }
 };
 
 // Enemy definitions
@@ -276,6 +279,9 @@ function togglePause() {
 function updateNextWaveBtn() {
 	const btn = document.getElementById('nextWaveBtn');
 	btn.disabled = waveInProgress || !gameStarted || gameOver;
+	if (!waveInProgress && nextWaveTimer === null) {
+		btn.textContent = 'Next Wave';
+	}
 }
 
 // Update Pause button state - disabled when no wave is in progress
@@ -1073,6 +1079,12 @@ function spawnWave() {
 		return;
 	}
 
+	if (nextWaveTimer) {
+		clearInterval(nextWaveTimer);
+		nextWaveTimer = null;
+	}
+	document.getElementById('nextWaveBtn').textContent = 'Next Wave';
+
 	wave++;
 	waveInProgress = true;
 	updateNextWaveBtn();
@@ -1179,7 +1191,7 @@ function spawnWave() {
 
 		// Bosses get extra HP on top of general scaling
 		if (type === 'boss') {
-			enemy.hp *= 2.5;
+			enemy.hp *= 3;
 		}
 
 		// After wave 80: bosses get extra HP and move faster
@@ -1200,6 +1212,29 @@ function spawnWave() {
 		enemies.push(enemy);
 		spawned++;
 	}, isBossWave ? 1200 : 800 - Math.min(wave * 30, 500));
+}
+
+function startNextWaveTimer() {
+	if (nextWaveTimer) {
+		clearInterval(nextWaveTimer);
+	}
+	nextWaveTimerDuration = AUTO_NEXT_WAVE;
+	const btn = document.getElementById('nextWaveBtn');
+
+	nextWaveTimer = setInterval(() => {
+		if (isPaused) return;
+
+		nextWaveTimerDuration -= 1000;
+		const seconds = Math.round(nextWaveTimerDuration / 1000);
+		btn.textContent = `Next Wave in ${seconds}s`;
+
+		if (nextWaveTimerDuration <= 0) {
+			clearInterval(nextWaveTimer);
+			nextWaveTimer = null;
+			btn.textContent = 'Next Wave';
+			spawnWave();
+		}
+	}, 1000);
 }
 
 // Check wave complete
@@ -1257,6 +1292,7 @@ function checkWaveComplete() {
 
 	// Start idle taunt timer after wave
 	startTauntTimer(TAUNT_DELAY_AFTER_WAVE);
+	startNextWaveTimer();
 }
 
 // Win game
