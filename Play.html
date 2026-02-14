@@ -6,198 +6,201 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Paper Doodles — Tower Defense</title>
 	<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Rajdhani:wght@300;500;700&display=swap"
-		rel="stylesheet">
+	      rel="stylesheet">
 	<link rel="stylesheet" href="assets/style.css">
 </head>
 
 <body>
-	<!-- Paper Doodles title -->
-	<div class="paper-title">Paper Doodles</div>
+<!-- Paper Doodles title -->
+<div class="paper-title">Paper Doodles</div>
 
-	<div class="game-container">
-		<div class="main-area">
+<div class="game-container">
+	<div class="main-area">
 
-			<div class="stats-bar">
-				<div class="stats-title">Tower Defense</div>
-				<div class="stats-row">
-					<div class="stat gold">
-						<!--					<div class="stat-icon">💰</div>-->
-						<div>
-							<div
-								style="font-size: 26px;color: #0000ff;font-weight: 700;letter-spacing: 2px !important;">
-								Gold</div>
-							<div class="stat-value" id="gold">150</div>
+		<div class="stats-bar">
+			<div class="stats-title">Tower Defense</div>
+			<div class="stats-row">
+				<div class="stat gold">
+					<!--					<div class="stat-icon">💰</div>-->
+					<div>
+						<div
+							style="font-size: 26px;color: #0000ff;font-weight: 700;letter-spacing: 2px !important;">
+							Gold
 						</div>
-					</div>
-					<div class="stat lives">
-						<!--					<div class="stat-icon">❤️</div>-->
-						<div>
-							<div
-								style="font-size: 26px;color: #0000ff;font-weight: 700;letter-spacing: 2px !important;">
-								Life</div>
-							<div class="stat-value" id="lives">5</div>
-						</div>
-					</div>
-					<div class="stat wave">
-						<!--					<div class="stat-icon">🌊</div>-->
-						<div>
-							<div
-								style="font-size: 26px; color: #0000ff;font-weight: 700;letter-spacing: 2px !important;">
-								Wave</div>
-							<div class="stat-value" id="wave">1</div>
-						</div>
-					</div>
-					<div class="stat score">
-						<!--					<div class="stat-icon">⭐</div>-->
-						<div>
-							<div
-								style="font-size: 26px;color: #0000ff;font-weight: 700;letter-spacing: 2px !important;">
-								Score</div>
-							<div class="stat-value" id="score">0</div>
-						</div>
+						<div class="stat-value" id="gold">150</div>
 					</div>
 				</div>
-			</div>
-
-			<div class="canvas-wrapper">
-				<!-- Стопка страниц -->
-				<div class="page-stack">
-					<div class="page-edge"></div>
-					<div class="page-edge-2"></div>
+				<div class="stat lives">
+					<!--					<div class="stat-icon">❤️</div>-->
+					<div>
+						<div
+							style="font-size: 26px;color: #0000ff;font-weight: 700;letter-spacing: 2px !important;">
+							Life
+						</div>
+						<div class="stat-value" id="lives">5</div>
+					</div>
 				</div>
-
-				<canvas id="gameCanvas" width="600" height="700"></canvas>
-
-				<!-- goblin overlay -->
-				<div class="pause-overlay" id="pauseOverlay">
-					<div class="pause-text">Stop Attack!!!</div>
+				<div class="stat wave">
+					<!--					<div class="stat-icon">🌊</div>-->
+					<div>
+						<div
+							style="font-size: 26px; color: #0000ff;font-weight: 700;letter-spacing: 2px !important;">
+							Wave
+						</div>
+						<div class="stat-value" id="wave">1</div>
+					</div>
 				</div>
-				<div class="pause-overlay" id="attackOverlay">
-					<div class="pause-text">Attack...!!!</div>
+				<div class="stat score">
+					<!--					<div class="stat-icon">⭐</div>-->
+					<div>
+						<div
+							style="font-size: 26px;color: #0000ff;font-weight: 700;letter-spacing: 2px !important;">
+							Score
+						</div>
+						<div class="stat-value" id="score">0</div>
+					</div>
 				</div>
-				<div class="pause-overlay" id="doneOverlay">
-					<div class="pause-text">Ёб твою мать...</div>
-				</div>
-				<div class="pause-overlay" id="oneOverlay">
-					<div class="pause-text">Ха-ха, пёс!!!</div>
-				</div>
-				<div class="pause-overlay" id="finallyOverlay">
-					<div class="pause-text">Наконец-то, блядь...</div>
-				</div>
-
-				<!-- knights overlay -->
-				<div class="pause-overlay pause-overlay-knights" id="knightsOverlay">
-					<div class="pause-text">Йиппи-ка-ей, ушлёпок хренов!</div>
-					<div class="pause-text">Ну чё, зелёные, кто ещё хочет огрести?</div>
-					<div class="pause-text">Пиздуйте обратно в нору, крысы помойные!</div>
-					<div class="pause-text">Хуле встали? Валите нахуй!</div>
-					<div class="pause-text">Ебать вас в сраку через коромысло!</div>
-					<div class="pause-text">Ну и хули ты мне сделаешь, плесень зелёная?</div>
-					<div class="pause-text">Пошли нахуй, шушера подзаборная!</div>
-					<div class="pause-text">Я вас тут всех в асфальт закатаю, уёбки!</div>
-					<div class="pause-text">Ой, бля, а чё так мало? Я только разогрелся!</div>
-					<div class="pause-text">Сосите хуй, гоблины, замок стоит!</div>
-				</div>
-
-				<!-- goblin text on pause -->
-				<div class="pause-overlay" id="tempOverlay">
-					<div class="pause-text">Чё зассал, консервная банка?</div>
-					<div class="pause-text"><div class="pause-text">Ты чё, ёбаный дурак? Нажми кнопку, пёс!</div></div>
-					<div class="pause-text"><div class="pause-text">Э, мудила железный, ты играть будешь или хуи пинать?</div></div>
-					<div class="pause-text"><div class="pause-text">Тебе пиздец, рыцарь недоёбанный!</div></div>
-					<div class="pause-text"><div class="pause-text">Я щас приду и тебе доспехи в жопу затолкаю!</div></div>
-					<div class="pause-text"><div class="pause-text">Ты там чё, обосрался и сидишь? Жми кнопку, блядь!</div></div>
-					<div class="pause-text"><div class="pause-text">Слышь, пёс, я тебе рожу на жопу натяну!</div></div>
-					<div class="pause-text"><div class="pause-text">Ебать-колотить, он ещё думает! Жми давай, хуеплёт!</div></div>
-					<div class="pause-text"><div class="pause-text">Чё морозишься? Тебе и так пиздец, хуже не будет!</div></div>
-					<div class="pause-text"><div class="pause-text">Я те щас шлем на уши натяну, будешь как чебурашка!</div></div>
-					<div class="pause-text"><div class="pause-text">Ты там что, бухаешь? Давай, блядь, воюй!</div></div>
-					<div class="pause-text"><div class="pause-text">Я тебя через хуй да в Красную Армию!</div></div>
-					<div class="pause-text"><div class="pause-text">Ёб твою мать, да начинай уже, трус ёбаный!</div></div>
-					<div class="pause-text"><div class="pause-text">Ты чё, решил до пенсии досидеть? Жми, блядь!</div></div>
-					<div class="pause-text"><div class="pause-text">Э, жестянка! Я тебя в узел завяжу и бантик сделаю!</div></div>
-					<div class="pause-text"><div class="pause-text">Хуле ты на меня смотришь? Запускай волну, пидрила!</div></div>
-				</div>
-
-				<!-- knights text on pause -->
-				<div class="pause-overlay pause-overlay-knights" id="knightsTempOverlay">
-					<div class="pause-text">Ты чё гавкаешь, шавка зелёная?</div>
-					<div class="pause-text"><div class="pause-text">Ой, бля, он ещё и разговаривает!</div></div>
-					<div class="pause-text"><div class="pause-text">Слышь, хуй моржовый, рот закрой, воняет!</div></div>
-					<div class="pause-text"><div class="pause-text">Иди нахуй, и маму свою забери!</div></div>
-					<div class="pause-text"><div class="pause-text">Ты кому пиздишь, огрызок? Я те щас устрою!</div></div>
-					<div class="pause-text"><div class="pause-text">Ебать ты страшный. Зеркало-то не треснуло?</div></div>
-					<div class="pause-text"><div class="pause-text">Ты думал тут легко будет? Хуй тебе, а не замок!</div></div>
-					<div class="pause-text"><div class="pause-text">Я тебя, блядь, в фарш прокручу и пельмени слеплю!</div></div>
-					<div class="pause-text"><div class="pause-text">Чё сказал? А ну повтори, ёбаный ты крот!</div></div>
-					<div class="pause-text"><div class="pause-text">Тебя мамка в детстве головой об пол роняла?</div></div>
-					<div class="pause-text"><div class="pause-text">Я тебя через колено и в макулатуру сдам!</div></div>
-					<div class="pause-text"><div class="pause-text">Слышь, плесень, я тебя сейчас на стену размажу!</div></div>
-					<div class="pause-text"><div class="pause-text">Ну давай, выходи, ёбаный ты клоун!</div></div>
-					<div class="pause-text"><div class="pause-text">Ты, блядь, реально охуел. Ну, щас получишь.</div></div>
-					<div class="pause-text"><div class="pause-text">Я те щас уши отрежу и в жопу засуну, понял?</div></div>
-					<div class="pause-text"><div class="pause-text">Ты кто вообще? Хуй с горы? Вали отсюда!</div></div>
-				</div>
-
-			</div>
-
-			<div class="instructions">
-				Click map — place tower | Click tower — upgrade | 1-3 — select tower | Space — start wave | P — pause |
-				S — sell
 			</div>
 		</div>
 
-		<div class="side-panel">
-			<div class="panel">
-				<div class="panel-title">Towers</div>
-
-				<div class="tower-btn-wrap">
-					<button class="tower-btn tower1 selected" data-tower="tower1">
-						<canvas class="tower-preview" data-cells="1" width="24" height="24"></canvas>
-						<div class="tower-stats">Buy: 80</div>
-						<div class="tower-cost">Upgrade: 100</div>
-					</button>
-				</div>
-
-				<div class="tower-btn-wrap">
-					<button class="tower-btn tower2" data-tower="tower2">
-						<canvas class="tower-preview" data-cells="2" width="40" height="24"></canvas>
-						<div class="tower-stats">Buy: 150</div>
-						<div class="tower-cost">Upgrade: 170</div>
-					</button>
-				</div>
-
-				<div class="tower-btn-wrap">
-					<button class="tower-btn tower3" data-tower="tower3">
-						<canvas class="tower-preview" data-cells="3" width="56" height="24"></canvas>
-						<div class="tower-stats">Buy: 250</div>
-						<div class="tower-cost">Upgrade: 300</div>
-					</button>
-				</div>
-				<div class="control-btn-wrap"><button class="control-btn" id="playPauseBtn">Start</button></div>
-				<div class="control-btn-wrap"><button class="control-btn" id="nextWaveBtn" disabled>Next Wave</button>
-				</div>
-				<div class="control-btn-wrap"><button class="control-btn" id="sellBtn">Sell Mode</button></div>
-				<div class="control-btn-wrap"><button class="control-btn danger" id="restart">Restart</button></div>
+		<div class="canvas-wrapper">
+			<!-- Стопка страниц -->
+			<div class="page-stack">
+				<div class="page-edge"></div>
+				<div class="page-edge-2"></div>
 			</div>
+
+			<canvas id="gameCanvas" width="600" height="700"></canvas>
+
+			<!-- goblin overlay -->
+			<div class="pause-overlay" id="pauseOverlay">
+				<div class="pause-text">Stop Attack!!!</div>
+			</div>
+			<div class="pause-overlay" id="attackOverlay">
+				<div class="pause-text">Attack...!!!</div>
+			</div>
+			<div class="pause-overlay" id="doneOverlay">
+				<div class="pause-text">Ёб твою мать...</div>
+			</div>
+			<div class="pause-overlay" id="oneOverlay">
+				<div class="pause-text">Ха-ха, пёс!!!</div>
+			</div>
+			<div class="pause-overlay" id="finallyOverlay">
+				<div class="pause-text">Наконец-то, блядь...</div>
+			</div>
+
+			<!-- knights overlay -->
+			<div class="pause-overlay pause-overlay-knights" id="knightsOverlay">
+				<div class="pause-text">Йиппи-ка-ей, ушлёпок хренов!</div>
+				<div class="pause-text">Ну чё, зелёные, кто ещё хочет огрести?</div>
+				<div class="pause-text">Пиздуйте обратно в нору, крысы помойные!</div>
+				<div class="pause-text">Хуле встали? Валите нахуй!</div>
+				<div class="pause-text">Ебать вас в сраку через коромысло!</div>
+				<div class="pause-text">Ну и хули ты мне сделаешь, плесень зелёная?</div>
+				<div class="pause-text">Пошли нахуй, шушера подзаборная!</div>
+				<div class="pause-text">Я вас тут всех в асфальт закатаю, уёбки!</div>
+				<div class="pause-text">Ой, бля, а чё так мало? Я только разогрелся!</div>
+				<div class="pause-text">Сосите хуй, гоблины, замок стоит!</div>
+			</div>
+
+			<!-- goblin text on pause -->
+			<div class="pause-overlay" id="tempOverlay">
+				<div class="pause-text">Я щас приду и тебе доспехи в жопу затолкаю!</div>
+				<div class="pause-text">Я тебя через хуй да в Красную Армию!</div>
+				<div class="pause-text">Я тебя в узел завяжу и бантик сделаю!</div>
+				<div class="pause-text">Иди нахуй, и маму свою забери!</div>
+				<div class="pause-text">Я тебя, блядь, в фарш прокручу и пельмени слеплю!</div>
+				<div class="pause-text">Чё сказал? А ну повтори, ёбаный ты крот!</div>
+				<div class="pause-text">Я тебя через колено и в макулатуру сдам!</div>
+				<div class="pause-text">Ты, блядь, реально охуел. Ну, щас получишь.</div>
+				<div class="pause-text">Ты кто вообще? Хуй с горы? Вали отсюда!</div>
+				<div class="pause-text">Я тебе сейчас меч в жопу вставлю и скажу, что это традиция!</div>
+				<div class="pause-text">Я тебя в болото утоплю и скажу, что ты декоративный!</div>
+				<div class="pause-text">Я тебя в костёр кину и скажу, что это фестиваль!</div>
+			</div>
+
+			<!-- knights text on pause -->
+			<div class="pause-overlay pause-overlay-knights" id="knightsTempOverlay">
+				<div class="pause-text">Ой, бля, он ещё и разговаривает!</div>
+				<div class="pause-text">Слышь, пёс, я тебе рожу в жопу затолкаю!</div>
+				<div class="pause-text">Слышь, хуй моржовый, рот закрой, воняет!</div>
+				<div class="pause-text">Ты кому пиздишь, огрызок? Я те щас устрою!</div>
+				<div class="pause-text">Ебать ты страшный. Зеркало-то не треснуло?</div>
+				<div class="pause-text">Ты думал тут легко будет? Хуй тебе, а не замок!</div>
+				<div class="pause-text">Слышь, плесень, я тебя сейчас на стену размажу!</div>
+				<div class="pause-text">Я те щас уши отрежу и в жопу засуну, понял?</div>
+				<div class="pause-text">Я тебе зубы пересчитаю и на калькуляторе распечатаю!</div>
+				<div class="pause-text">Я тебя разберу, как конструктор, и не соберу обратно!</div>
+				<div class="pause-text">Слышь, синий, я тебя щас как жабу тапком вмажу!</div>
+				<div class="pause-text">Твоя рожа кирпича просит, а я отзывчивый!</div>
+			</div>
+
+		</div>
+
+		<div class="instructions">
+			Click map — place tower | Click tower — upgrade | 1-3 — select tower | Space — start wave | P — pause |
+			S — sell
 		</div>
 	</div>
 
-	<div class="game-over-overlay" id="gameOver">
-		<img src="assets/images/knights_fall.png" class="game-over-img" alt="Fallen knights">
-<!--		<div class="game-over-text">GAME OVER</div>-->
-		<div class="final-score" style="margin-top: -40px;">Final Score: <span id="finalScore">0</span></div>
-		<button class="control-btn" onclick="location.reload()">Play Again</button>
-	</div>
+	<div class="side-panel">
+		<div class="panel">
+			<div class="panel-title">Towers</div>
 
-	<div class="victory-overlay" id="victoryScreen">
-		<img src="assets/images/knights_victory.png" class="game-over-img" alt="Victory knights">
-<!--		<div class="victory-text">Victory!!!</div>-->
-		<div class="final-score">Final Score: <span id="victoryScore">0</span></div>
-		<button class="control-btn" onclick="location.reload()">Play Again</button>
-	</div>
+			<div class="tower-btn-wrap">
+				<button class="tower-btn tower1 selected" data-tower="tower1">
+					<canvas class="tower-preview" data-cells="1" width="24" height="24"></canvas>
+					<div class="tower-stats">Buy: 80</div>
+					<div class="tower-cost">Upgrade: 100</div>
+				</button>
+			</div>
 
-	<script src="assets/app.js"></script>
+			<div class="tower-btn-wrap">
+				<button class="tower-btn tower2" data-tower="tower2">
+					<canvas class="tower-preview" data-cells="2" width="40" height="24"></canvas>
+					<div class="tower-stats">Buy: 150</div>
+					<div class="tower-cost">Upgrade: 170</div>
+				</button>
+			</div>
+
+			<div class="tower-btn-wrap">
+				<button class="tower-btn tower3" data-tower="tower3">
+					<canvas class="tower-preview" data-cells="3" width="56" height="24"></canvas>
+					<div class="tower-stats">Buy: 250</div>
+					<div class="tower-cost">Upgrade: 300</div>
+				</button>
+			</div>
+			<div class="control-btn-wrap">
+				<button class="control-btn" id="playPauseBtn">Start</button>
+			</div>
+			<div class="control-btn-wrap">
+				<button class="control-btn" id="nextWaveBtn" disabled>Next Wave</button>
+			</div>
+			<div class="control-btn-wrap">
+				<button class="control-btn" id="sellBtn">Sell Mode</button>
+			</div>
+			<div class="control-btn-wrap">
+				<button class="control-btn danger" id="restart">Restart</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="game-over-overlay" id="gameOver">
+	<img src="assets/images/knights_fall.png" class="game-over-img" alt="Fallen knights">
+	<!--		<div class="game-over-text">GAME OVER</div>-->
+	<div class="final-score" style="margin-top: -40px;">Final Score: <span id="finalScore">0</span></div>
+	<button class="control-btn" onclick="location.reload()">Play Again</button>
+</div>
+
+<div class="victory-overlay" id="victoryScreen">
+	<img src="assets/images/knights_victory.png" class="game-over-img" alt="Victory knights">
+	<!--		<div class="victory-text">Victory!!!</div>-->
+	<div class="final-score">Final Score: <span id="victoryScore">0</span></div>
+	<button class="control-btn" onclick="location.reload()">Play Again</button>
+</div>
+
+<script src="assets/app.js"></script>
 </body>
 
 </html>
