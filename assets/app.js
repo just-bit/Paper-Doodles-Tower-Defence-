@@ -48,8 +48,8 @@ let currentKnightMessageIndex = 0;
 // Tower types - based on cell count
 const towerTypes = {
 	tower1: { cost: 80, upgradeCost: 100, damage: 20, range: 70, fireRate: 300, cells: 1, name: 'Tower 1' },
-	tower2: { cost: 150, upgradeCost: 170, damage: 20, range: 84, fireRate: 700, cells: 2, name: 'Tower 2' },
-	tower3: { cost: 250, upgradeCost: 300, damage: 20, range: 101, fireRate: 9000, cells: 3, name: 'Tower 3' }
+	tower2: { cost: 150, upgradeCost: 170, damage: 25, range: 84, fireRate: 500, cells: 2, name: 'Tower 2' },
+	tower3: { cost: 250, upgradeCost: 300, damage: 30, range: 101, fireRate: 1000, cells: 3, name: 'Tower 3' }
 };
 
 // Enemy definitions
