@@ -5,6 +5,8 @@
 
 get_header();
 
+$phrases = get_field( 'phrases' ) ?: [];
+
 $tower_defaults = [
 	1 => [ 'cells' => 1, 'cost' => 80, 'upgrade_cost' => 100 ],
 	2 => [ 'cells' => 2, 'cost' => 150, 'upgrade_cost' => 170 ],
@@ -81,66 +83,46 @@ for ( $i = 1; $i <= 3; $i++ ) {
 
 			<!-- goblin overlay -->
 			<div class="pause-overlay" id="pauseOverlay">
-				<div class="pause-text">Стопэ!!!</div>
+				<div class="pause-text"><?php echo esc_html( $phrases['goblin_pause'] ?? 'Стопэ!!!' ); ?></div>
 			</div>
 			<div class="pause-overlay" id="attackOverlay">
-				<div class="pause-text">Мочи буржуев...!!!</div>
+				<div class="pause-text"><?php echo esc_html( $phrases['goblin_attack'] ?? 'Мочи буржуев...!!!' ); ?></div>
 			</div>
 			<div class="pause-overlay" id="doneOverlay">
-				<div class="pause-text">Ёб твою мать...</div>
+				<div class="pause-text"><?php echo esc_html( $phrases['goblin_done'] ?? 'Ёб твою мать...' ); ?></div>
 			</div>
 			<div class="pause-overlay" id="oneOverlay">
-				<div class="pause-text">Ха-ха, пёс!!!</div>
+				<div class="pause-text"><?php echo esc_html( $phrases['goblin_one'] ?? 'Ха-ха, пёс!!!' ); ?></div>
 			</div>
 			<div class="pause-overlay" id="finallyOverlay">
-				<div class="pause-text">Ебааа, наконец-то...</div>
+				<div class="pause-text"><?php echo esc_html( $phrases['goblin_finally'] ?? 'Ебааа, наконец-то...' ); ?></div>
 			</div>
 
 			<!-- knights overlay -->
 			<div class="pause-overlay pause-overlay-knights" id="knightsOverlay">
-				<div class="pause-text">Йиппи-ка-ей, ушлёпок хренов!</div>
-				<div class="pause-text">Ну чё, зелёные, кто ещё хочет огрести?</div>
-				<div class="pause-text">Пиздуйте обратно в нору, крысы помойные!</div>
-				<div class="pause-text">Хуле встали? Валите нахрен!</div>
-				<div class="pause-text">Епать вас в сраку через коромысло!</div>
-				<div class="pause-text">Ну и хули ты мне сделаешь, плесень зелёная?</div>
-				<div class="pause-text">Пошли нахуй, шушера подзаборная!</div>
-				<div class="pause-text">Я вас тут всех в асфальт закатаю, долбодятлы!</div>
-				<div class="pause-text">Ой, бля, а чё так мало? Я только разогрелся!</div>
-				<div class="pause-text">Мелкие засланцы вы, замок стоит!</div>
-				<div class="pause-text">Как ебали мы вас черти, так ебать и будем))</div>
+				<?php
+				$knights_wave = $phrases['knights_wave'] ?? "Йиппи-ка-ей, ушлёпок хренов!\nНу чё, зелёные, кто ещё хочет огрести?\nПиздуйте обратно в нору, крысы помойные!\nХуле встали? Валите нахрен!\nЕпать вас в сраку через коромысло!\nНу и хули ты мне сделаешь, плесень зелёная?\nПошли нахуй, шушера подзаборная!\nЯ вас тут всех в асфальт закатаю, долбодятлы!\nОй, бля, а чё так мало? Я только разогрелся!\nМелкие засланцы вы, замок стоит!\nКак ебали мы вас черти, так ебать и будем))";
+				foreach ( array_filter( explode( "\n", $knights_wave ) ) as $line ) : ?>
+					<div class="pause-text"><?php echo esc_html( trim( $line ) ); ?></div>
+				<?php endforeach; ?>
 			</div>
 
 			<!-- goblin text on pause -->
 			<div class="pause-overlay" id="tempOverlay">
-				<div class="pause-text">Я щас приду и тебе доспехи в жопу затолкаю!</div>
-				<div class="pause-text">Я тебя через хер да в красную армию!</div>
-				<div class="pause-text">Я тебя в узел завяжу и бантик сделаю!</div>
-				<div class="pause-text">Иди нахер, и маму свою забери!</div>
-				<div class="pause-text">Я тебя, блин, в фарш прокручу и пельмени слеплю!</div>
-				<div class="pause-text">Чё сказал? А ну повтори, козёл!</div>
-				<div class="pause-text">Я тебя через колено и в макулатуру сдам!</div>
-				<div class="pause-text">Ты блин реально охуел. Ну, щас ты огребешь.</div>
-				<div class="pause-text">Ты кто вообще? Хуй с горы? Вали отсюда!</div>
-				<div class="pause-text">Я тебе сейчас меч в жопу вставлю и скажу, что это традиция!</div>
-				<div class="pause-text">Я тебя в болото утоплю и скажу, что ты декоративный!</div>
-				<div class="pause-text">Я тебя в костёр кину и скажу, что это фестиваль!</div>
+				<?php
+				$goblin_taunt = $phrases['goblin_taunt'] ?? "Я щас приду и тебе доспехи в жопу затолкаю!\nЯ тебя через хер да в красную армию!\nЯ тебя в узел завяжу и бантик сделаю!\nИди нахер, и маму свою забери!\nЯ тебя, блин, в фарш прокручу и пельмени слеплю!\nЧё сказал? А ну повтори, козёл!\nЯ тебя через колено и в макулатуру сдам!\nТы блин реально охуел. Ну, щас ты огребешь.\nТы кто вообще? Хуй с горы? Вали отсюда!\nЯ тебе сейчас меч в жопу вставлю и скажу, что это традиция!\nЯ тебя в болото утоплю и скажу, что ты декоративный!\nЯ тебя в костёр кину и скажу, что это фестиваль!";
+				foreach ( array_filter( explode( "\n", $goblin_taunt ) ) as $line ) : ?>
+					<div class="pause-text"><?php echo esc_html( trim( $line ) ); ?></div>
+				<?php endforeach; ?>
 			</div>
 
 			<!-- knights text on pause -->
 			<div class="pause-overlay pause-overlay-knights" id="knightsTempOverlay">
-				<div class="pause-text">Ой, бля, он ещё и разговаривает!</div>
-				<div class="pause-text">Слышь, пёс, я тебе рожу в жопу затолкаю!</div>
-				<div class="pause-text">Слышь, хуй моржовый, рот закрой!</div>
-				<div class="pause-text">Дохуя пиздишь? Я те щас устрою!</div>
-				<div class="pause-text">Ебать ты страшный. ))</div>
-				<div class="pause-text">Ты думал тут легко будет? Хертебе, а не замок!</div>
-				<div class="pause-text">Слышь, плесень, я тебя сейчас на стену размажу!</div>
-				<div class="pause-text">Я те щас уши отрежу и в жопу затолкаю, понял?</div>
-				<div class="pause-text">Я тебе зубы пересчитаю и на калькуляторе распечатаю!</div>
-				<div class="pause-text">Я тебя разберу, как конструктор, и не соберу обратно!</div>
-				<div class="pause-text">Слышь, синий, я тебя щас как жабу тапком вмажу!</div>
-				<div class="pause-text">Твоя рожа кирпича просит, а я отзывчивый, могу устроить!</div>
+				<?php
+				$knights_taunt = $phrases['knights_taunt'] ?? "Ой, бля, он ещё и разговаривает!\nСлышь, пёс, я тебе рожу в жопу затолкаю!\nСлышь, хуй моржовый, рот закрой!\nДохуя пиздишь? Я те щас устрою!\nЕбать ты страшный. ))\nТы думал тут легко будет? Хертебе, а не замок!\nСлышь, плесень, я тебя сейчас на стену размажу!\nЯ те щас уши отрежу и в жопу затолкаю, понял?\nЯ тебе зубы пересчитаю и на калькуляторе распечатаю!\nЯ тебя разберу, как конструктор, и не соберу обратно!\nСлышь, синий, я тебя щас как жабу тапком вмажу!\nТвоя рожа кирпича просит, а я отзывчивый, могу устроить!";
+				foreach ( array_filter( explode( "\n", $knights_taunt ) ) as $line ) : ?>
+					<div class="pause-text"><?php echo esc_html( trim( $line ) ); ?></div>
+				<?php endforeach; ?>
 			</div>
 
 		</div>
