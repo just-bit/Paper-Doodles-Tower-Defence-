@@ -20,16 +20,16 @@
 
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', 'paper_doodles' );
+define( 'DB_NAME', 'dunedain_paperdoodles' );
 
 /** Database username */
-define( 'DB_USER', 'root' );
+define( 'DB_USER', 'dunedain_paperdoodles' );
 
 /** Database password */
-define( 'DB_PASSWORD', 'root' );
+define( 'DB_PASSWORD', 'J9nE8vn+7;' );
 
 /** Database hostname */
-define( 'DB_HOST', 'localhost' );
+define( 'DB_HOST', 'dunedain.mysql.tools' );
 
 /** Database charset to use in creating database tables. */
 define( 'DB_CHARSET', 'utf8mb4' );
