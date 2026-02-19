@@ -1,0 +1,432 @@
+[
+    {
+        "key": "group_game_settings",
+        "title": "Game Settings",
+        "fields": [
+            {
+                "key": "field_game_settings_group",
+                "label": "\u041e\u0441\u043d\u043e\u0432\u043d\u044b\u0435 \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438",
+                "name": "game_settings",
+                "type": "group",
+                "layout": "block",
+                "sub_fields": [
+                    {
+                        "key": "field_max_wave",
+                        "label": "Max Waves",
+                        "name": "max_wave",
+                        "type": "number",
+                        "instructions": "\u041a\u043e\u043b\u0438\u0447\u0435\u0441\u0442\u0432\u043e \u0432\u043e\u043b\u043d \u0432 \u0438\u0433\u0440\u0435",
+                        "default_value": 100,
+                        "min": 1,
+                        "max": 1000,
+                        "step": 1,
+                        "wrapper": { "width": "25" }
+                    },
+                    {
+                        "key": "field_start_gold",
+                        "label": "Start Gold",
+                        "name": "start_gold",
+                        "type": "number",
+                        "instructions": "\u0421\u0442\u0430\u0440\u0442\u043e\u0432\u043e\u0435 \u0437\u043e\u043b\u043e\u0442\u043e \u0438\u0433\u0440\u043e\u043a\u0430",
+                        "default_value": 600,
+                        "min": 0,
+                        "step": 1,
+                        "wrapper": { "width": "25" }
+                    },
+                    {
+                        "key": "field_start_lives",
+                        "label": "Start Lives",
+                        "name": "start_lives",
+                        "type": "number",
+                        "instructions": "\u041a\u043e\u043b\u0438\u0447\u0435\u0441\u0442\u0432\u043e \u0436\u0438\u0437\u043d\u0435\u0439 \u0438\u0433\u0440\u043e\u043a\u0430",
+                        "default_value": 15,
+                        "min": 1,
+                        "step": 1,
+                        "wrapper": { "width": "25" }
+                    },
+                    {
+                        "key": "field_auto_next_wave",
+                        "label": "Auto Next Wave (ms)",
+                        "name": "auto_next_wave",
+                        "type": "number",
+                        "instructions": "\u0410\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a \u0432\u043e\u043b\u043d\u044b (\u043c\u0441)",
+                        "default_value": 15000,
+                        "min": 1000,
+                        "step": 1000,
+                        "wrapper": { "width": "25" }
+                    }
+                ]
+            },
+            {
+                "key": "field_tower_1_group",
+                "label": "\u0411\u0430\u0448\u043d\u044f 1",
+                "name": "tower_1",
+                "type": "group",
+                "layout": "block",
+                "sub_fields": [
+                    {
+                        "key": "field_tower_1_cost",
+                        "label": "\u0421\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
+                        "name": "cost",
+                        "type": "number",
+                        "default_value": 80,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_1_upgrade_cost",
+                        "label": "\u0421\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c \u0443\u043b\u0443\u0447\u0448\u0435\u043d\u0438\u044f",
+                        "name": "upgrade_cost",
+                        "type": "number",
+                        "default_value": 100,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_1_cells",
+                        "label": "\u0420\u0430\u0437\u043c\u0435\u0440 (\u043a\u043b\u0435\u0442\u043a\u0438)",
+                        "name": "cells",
+                        "type": "number",
+                        "default_value": 1,
+                        "min": 1,
+                        "max": 5,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_1_damage_lvl_1",
+                        "label": "\u0423\u0440\u043e\u043d Lvl 1",
+                        "name": "damage_lvl_1",
+                        "type": "number",
+                        "default_value": 20,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_1_damage_lvl_2",
+                        "label": "\u0423\u0440\u043e\u043d Lvl 2",
+                        "name": "damage_lvl_2",
+                        "type": "number",
+                        "default_value": 30,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_1_damage_lvl_3",
+                        "label": "\u0423\u0440\u043e\u043d Lvl 3",
+                        "name": "damage_lvl_3",
+                        "type": "number",
+                        "default_value": 40,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_1_range_lvl_1",
+                        "label": "\u0420\u0430\u0434\u0438\u0443\u0441 Lvl 1",
+                        "name": "range_lvl_1",
+                        "type": "number",
+                        "default_value": 70,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_1_range_lvl_2",
+                        "label": "\u0420\u0430\u0434\u0438\u0443\u0441 Lvl 2",
+                        "name": "range_lvl_2",
+                        "type": "number",
+                        "default_value": 77,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_1_range_lvl_3",
+                        "label": "\u0420\u0430\u0434\u0438\u0443\u0441 Lvl 3",
+                        "name": "range_lvl_3",
+                        "type": "number",
+                        "default_value": 84,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_1_fire_rate_lvl_1",
+                        "label": "\u0421\u043a\u043e\u0440\u043e\u0441\u0442\u0440\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c Lvl 1 (\u043c\u0441)",
+                        "name": "fire_rate_lvl_1",
+                        "type": "number",
+                        "default_value": 300,
+                        "min": 50,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_1_fire_rate_lvl_2",
+                        "label": "\u0421\u043a\u043e\u0440\u043e\u0441\u0442\u0440\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c Lvl 2 (\u043c\u0441)",
+                        "name": "fire_rate_lvl_2",
+                        "type": "number",
+                        "default_value": 270,
+                        "min": 50,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_1_fire_rate_lvl_3",
+                        "label": "\u0421\u043a\u043e\u0440\u043e\u0441\u0442\u0440\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c Lvl 3 (\u043c\u0441)",
+                        "name": "fire_rate_lvl_3",
+                        "type": "number",
+                        "default_value": 243,
+                        "min": 50,
+                        "wrapper": { "width": "33" }
+                    }
+                ]
+            },
+            {
+                "key": "field_tower_2_group",
+                "label": "\u0411\u0430\u0448\u043d\u044f 2",
+                "name": "tower_2",
+                "type": "group",
+                "layout": "block",
+                "sub_fields": [
+                    {
+                        "key": "field_tower_2_cost",
+                        "label": "\u0421\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
+                        "name": "cost",
+                        "type": "number",
+                        "default_value": 150,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_2_upgrade_cost",
+                        "label": "\u0421\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c \u0443\u043b\u0443\u0447\u0448\u0435\u043d\u0438\u044f",
+                        "name": "upgrade_cost",
+                        "type": "number",
+                        "default_value": 170,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_2_cells",
+                        "label": "\u0420\u0430\u0437\u043c\u0435\u0440 (\u043a\u043b\u0435\u0442\u043a\u0438)",
+                        "name": "cells",
+                        "type": "number",
+                        "default_value": 2,
+                        "min": 1,
+                        "max": 5,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_2_damage_lvl_1",
+                        "label": "\u0423\u0440\u043e\u043d Lvl 1",
+                        "name": "damage_lvl_1",
+                        "type": "number",
+                        "default_value": 25,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_2_damage_lvl_2",
+                        "label": "\u0423\u0440\u043e\u043d Lvl 2",
+                        "name": "damage_lvl_2",
+                        "type": "number",
+                        "default_value": 38,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_2_damage_lvl_3",
+                        "label": "\u0423\u0440\u043e\u043d Lvl 3",
+                        "name": "damage_lvl_3",
+                        "type": "number",
+                        "default_value": 50,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_2_range_lvl_1",
+                        "label": "\u0420\u0430\u0434\u0438\u0443\u0441 Lvl 1",
+                        "name": "range_lvl_1",
+                        "type": "number",
+                        "default_value": 84,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_2_range_lvl_2",
+                        "label": "\u0420\u0430\u0434\u0438\u0443\u0441 Lvl 2",
+                        "name": "range_lvl_2",
+                        "type": "number",
+                        "default_value": 92,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_2_range_lvl_3",
+                        "label": "\u0420\u0430\u0434\u0438\u0443\u0441 Lvl 3",
+                        "name": "range_lvl_3",
+                        "type": "number",
+                        "default_value": 101,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_2_fire_rate_lvl_1",
+                        "label": "\u0421\u043a\u043e\u0440\u043e\u0441\u0442\u0440\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c Lvl 1 (\u043c\u0441)",
+                        "name": "fire_rate_lvl_1",
+                        "type": "number",
+                        "default_value": 500,
+                        "min": 50,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_2_fire_rate_lvl_2",
+                        "label": "\u0421\u043a\u043e\u0440\u043e\u0441\u0442\u0440\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c Lvl 2 (\u043c\u0441)",
+                        "name": "fire_rate_lvl_2",
+                        "type": "number",
+                        "default_value": 450,
+                        "min": 50,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_2_fire_rate_lvl_3",
+                        "label": "\u0421\u043a\u043e\u0440\u043e\u0441\u0442\u0440\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c Lvl 3 (\u043c\u0441)",
+                        "name": "fire_rate_lvl_3",
+                        "type": "number",
+                        "default_value": 405,
+                        "min": 50,
+                        "wrapper": { "width": "33" }
+                    }
+                ]
+            },
+            {
+                "key": "field_tower_3_group",
+                "label": "\u0411\u0430\u0448\u043d\u044f 3",
+                "name": "tower_3",
+                "type": "group",
+                "layout": "block",
+                "sub_fields": [
+                    {
+                        "key": "field_tower_3_cost",
+                        "label": "\u0421\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
+                        "name": "cost",
+                        "type": "number",
+                        "default_value": 250,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_3_upgrade_cost",
+                        "label": "\u0421\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c \u0443\u043b\u0443\u0447\u0448\u0435\u043d\u0438\u044f",
+                        "name": "upgrade_cost",
+                        "type": "number",
+                        "default_value": 300,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_3_cells",
+                        "label": "\u0420\u0430\u0437\u043c\u0435\u0440 (\u043a\u043b\u0435\u0442\u043a\u0438)",
+                        "name": "cells",
+                        "type": "number",
+                        "default_value": 3,
+                        "min": 1,
+                        "max": 5,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_3_damage_lvl_1",
+                        "label": "\u0423\u0440\u043e\u043d Lvl 1",
+                        "name": "damage_lvl_1",
+                        "type": "number",
+                        "default_value": 30,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_3_damage_lvl_2",
+                        "label": "\u0423\u0440\u043e\u043d Lvl 2",
+                        "name": "damage_lvl_2",
+                        "type": "number",
+                        "default_value": 45,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_3_damage_lvl_3",
+                        "label": "\u0423\u0440\u043e\u043d Lvl 3",
+                        "name": "damage_lvl_3",
+                        "type": "number",
+                        "default_value": 60,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_3_range_lvl_1",
+                        "label": "\u0420\u0430\u0434\u0438\u0443\u0441 Lvl 1",
+                        "name": "range_lvl_1",
+                        "type": "number",
+                        "default_value": 101,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_3_range_lvl_2",
+                        "label": "\u0420\u0430\u0434\u0438\u0443\u0441 Lvl 2",
+                        "name": "range_lvl_2",
+                        "type": "number",
+                        "default_value": 111,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_3_range_lvl_3",
+                        "label": "\u0420\u0430\u0434\u0438\u0443\u0441 Lvl 3",
+                        "name": "range_lvl_3",
+                        "type": "number",
+                        "default_value": 121,
+                        "min": 0,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_3_fire_rate_lvl_1",
+                        "label": "\u0421\u043a\u043e\u0440\u043e\u0441\u0442\u0440\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c Lvl 1 (\u043c\u0441)",
+                        "name": "fire_rate_lvl_1",
+                        "type": "number",
+                        "default_value": 1000,
+                        "min": 50,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_3_fire_rate_lvl_2",
+                        "label": "\u0421\u043a\u043e\u0440\u043e\u0441\u0442\u0440\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c Lvl 2 (\u043c\u0441)",
+                        "name": "fire_rate_lvl_2",
+                        "type": "number",
+                        "default_value": 900,
+                        "min": 50,
+                        "wrapper": { "width": "33" }
+                    },
+                    {
+                        "key": "field_tower_3_fire_rate_lvl_3",
+                        "label": "\u0421\u043a\u043e\u0440\u043e\u0441\u0442\u0440\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c Lvl 3 (\u043c\u0441)",
+                        "name": "fire_rate_lvl_3",
+                        "type": "number",
+                        "default_value": 810,
+                        "min": 50,
+                        "wrapper": { "width": "33" }
+                    }
+                ]
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "page_template",
+                    "operator": "==",
+                    "value": "page-home.php"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "active": true,
+        "show_in_rest": 0
+    }
+]
