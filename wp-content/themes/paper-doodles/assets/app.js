@@ -3,8 +3,8 @@ const ctx = canvas.getContext('2d');
 
 // Assets base URL (set by WordPress via wp_localize_script, fallback for static usage)
 const ASSETS_URL = (typeof paperDoodles !== 'undefined' && paperDoodles.assetsUrl)
-	? paperDoodles.assetsUrl
-	: 'assets';
+    ? paperDoodles.assetsUrl
+    : 'assets';
 
 // Decorative images on the field
 const goblinsImg = new Image();
@@ -126,25 +126,25 @@ const TOWER3_FIRE_RATE_LVL_3 = _tw(3, 'fireRateLvl3', 810);
 const TOWER_STATS = {
     tower1: {
         damage: [TOWER1_DAMAGE_LVL_1, TOWER1_DAMAGE_LVL_2, TOWER1_DAMAGE_LVL_3],
-        range:  [TOWER1_RANGE_LVL_1,  TOWER1_RANGE_LVL_2,  TOWER1_RANGE_LVL_3],
+        range: [TOWER1_RANGE_LVL_1, TOWER1_RANGE_LVL_2, TOWER1_RANGE_LVL_3],
         fireRate: [TOWER1_FIRE_RATE_LVL_1, TOWER1_FIRE_RATE_LVL_2, TOWER1_FIRE_RATE_LVL_3]
     },
     tower2: {
         damage: [TOWER2_DAMAGE_LVL_1, TOWER2_DAMAGE_LVL_2, TOWER2_DAMAGE_LVL_3],
-        range:  [TOWER2_RANGE_LVL_1,  TOWER2_RANGE_LVL_2,  TOWER2_RANGE_LVL_3],
+        range: [TOWER2_RANGE_LVL_1, TOWER2_RANGE_LVL_2, TOWER2_RANGE_LVL_3],
         fireRate: [TOWER2_FIRE_RATE_LVL_1, TOWER2_FIRE_RATE_LVL_2, TOWER2_FIRE_RATE_LVL_3]
     },
     tower3: {
         damage: [TOWER3_DAMAGE_LVL_1, TOWER3_DAMAGE_LVL_2, TOWER3_DAMAGE_LVL_3],
-        range:  [TOWER3_RANGE_LVL_1,  TOWER3_RANGE_LVL_2,  TOWER3_RANGE_LVL_3],
+        range: [TOWER3_RANGE_LVL_1, TOWER3_RANGE_LVL_2, TOWER3_RANGE_LVL_3],
         fireRate: [TOWER3_FIRE_RATE_LVL_1, TOWER3_FIRE_RATE_LVL_2, TOWER3_FIRE_RATE_LVL_3]
     }
 };
 
 const towerTypes = {
-    tower1: {cost: TOWER1_COST, upgradeCost: TOWER1_UPGRADE_COST, cells: TOWER1_CELLS, name: 'Tower 1'},
-    tower2: {cost: TOWER2_COST, upgradeCost: TOWER2_UPGRADE_COST, cells: TOWER2_CELLS, name: 'Tower 2'},
-    tower3: {cost: TOWER3_COST, upgradeCost: TOWER3_UPGRADE_COST, cells: TOWER3_CELLS, name: 'Tower 3'}
+    tower1: { cost: TOWER1_COST, upgradeCost: TOWER1_UPGRADE_COST, cells: TOWER1_CELLS, name: 'Tower 1' },
+    tower2: { cost: TOWER2_COST, upgradeCost: TOWER2_UPGRADE_COST, cells: TOWER2_CELLS, name: 'Tower 2' },
+    tower3: { cost: TOWER3_COST, upgradeCost: TOWER3_UPGRADE_COST, cells: TOWER3_CELLS, name: 'Tower 3' }
 };
 
 // Настройки врагов
@@ -183,25 +183,25 @@ const BOSS_COLOR = '#d4326c';
 const BOSS_SIZE = 20;
 
 const enemyTypes = {
-    basic: {hp: BASIC_HP, speed: BASIC_SPEED, reward: BASIC_REWARD, color: BASIC_COLOR, size: BASIC_SIZE},
-    fast: {hp: FAST_HP, speed: FAST_SPEED, reward: FAST_REWARD, color: FAST_COLOR, size: FAST_SIZE},
-    tank: {hp: TANK_HP, speed: TANK_SPEED, reward: TANK_REWARD, color: TANK_COLOR, size: TANK_SIZE},
-    boss: {hp: BOSS_HP, speed: BOSS_SPEED, reward: BOSS_REWARD, color: BOSS_COLOR, size: BOSS_SIZE}
+    basic: { hp: BASIC_HP, speed: BASIC_SPEED, reward: BASIC_REWARD, color: BASIC_COLOR, size: BASIC_SIZE },
+    fast: { hp: FAST_HP, speed: FAST_SPEED, reward: FAST_REWARD, color: FAST_COLOR, size: FAST_SIZE },
+    tank: { hp: TANK_HP, speed: TANK_SPEED, reward: TANK_REWARD, color: TANK_COLOR, size: TANK_SIZE },
+    boss: { hp: BOSS_HP, speed: BOSS_SPEED, reward: BOSS_REWARD, color: BOSS_COLOR, size: BOSS_SIZE }
 };
 
 // Path waypoints - adjusted for vertical A5 format
 const path = [
-    {x: 40, y: 80},
-    {x: 150, y: 80},
-    {x: 150, y: 200},
-    {x: 480, y: 200},
-    {x: 480, y: 320},
-    {x: 150, y: 320},
-    {x: 150, y: 440},
-    {x: 480, y: 440},
-    {x: 480, y: 560},
-    {x: 300, y: 560},
-    {x: 300, y: 660}
+    { x: 40, y: 80 },
+    { x: 150, y: 80 },
+    { x: 150, y: 200 },
+    { x: 480, y: 200 },
+    { x: 480, y: 320 },
+    { x: 150, y: 320 },
+    { x: 150, y: 440 },
+    { x: 480, y: 440 },
+    { x: 480, y: 560 },
+    { x: 300, y: 560 },
+    { x: 300, y: 660 }
 ];
 
 // Game objects
@@ -216,7 +216,7 @@ const grid = [];
 for (let x = 0; x < canvas.width / gridSize; x++) {
     grid[x] = [];
     for (let y = 0; y < canvas.height / gridSize; y++) {
-        grid[x][y] = {occupied: false, isPath: false};
+        grid[x][y] = { occupied: false, isPath: false };
     }
 }
 
@@ -1053,7 +1053,7 @@ function drawPath() {
     ctx.stroke();
 
     // Left edge - second stroke for pen effect
-    drawRoundedPathWithWobble(leftPath, leftWobble.map(w => ({x: w.x + 0.5, y: w.y + 0.5})), cornerRadius);
+    drawRoundedPathWithWobble(leftPath, leftWobble.map(w => ({ x: w.x + 0.5, y: w.y + 0.5 })), cornerRadius);
     ctx.strokeStyle = 'rgba(34, 85, 204, 0.3)';
     ctx.lineWidth = 1.5;
     ctx.stroke();
@@ -1065,7 +1065,7 @@ function drawPath() {
     ctx.stroke();
 
     // Right edge - second stroke for pen effect
-    drawRoundedPathWithWobble(rightPath, rightWobble.map(w => ({x: w.x + 0.5, y: w.y + 0.5})), cornerRadius);
+    drawRoundedPathWithWobble(rightPath, rightWobble.map(w => ({ x: w.x + 0.5, y: w.y + 0.5 })), cornerRadius);
     ctx.strokeStyle = 'rgba(34, 85, 204, 0.3)';
     ctx.lineWidth = 1.5;
     ctx.stroke();
@@ -1173,7 +1173,7 @@ function drawPlacementPreview() {
 
         // Preview range
         ctx.beginPath();
-        ctx.arc(mouseX, mouseY, towerTypes[selectedTower].range, 0, Math.PI * 2);
+        ctx.arc(mouseX, mouseY, TOWER_STATS[selectedTower].range[0], 0, Math.PI * 2);
         ctx.strokeStyle = 'rgba(204, 34, 34, 0.4)';
         ctx.lineWidth = 1;
         ctx.setLineDash([5, 5]);
@@ -1603,7 +1603,7 @@ document.getElementById('restart').addEventListener('click', () => location.relo
 
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
-    const keys = {'1': 'tower1', '2': 'tower2', '3': 'tower3'};
+    const keys = { '1': 'tower1', '2': 'tower2', '3': 'tower3' };
     if (keys[e.key]) {
         document.querySelectorAll('.tower-btn').forEach(b => b.classList.remove('selected'));
         document.querySelector(`[data-tower="${keys[e.key]}"]`).classList.add('selected');
